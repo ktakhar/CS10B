@@ -1,0 +1,36 @@
+CREATE TREE
+
+Creating Root
+      Creating L
+            Creating LL
+                  Creating LLL
+                        Creating LLLL
+                        Creating LLLR
+                              Creating LLLRR
+                  Creating LLR
+                        Creating LLRL
+                        Creating LLRR
+            Creating LR
+                  Creating LRL
+                        Creating LRLR
+                              Creating LRLRR
+                  Creating LRR
+                        Creating LRRL
+                        Creating LRRR
+      Creating R
+            Creating RL
+                  Creating RLL
+                        Creating RLLL
+                              Creating RLLLL
+                        Creating RLLR
+                              Creating RLLRR
+                  Creating RLR
+                        Creating RLRL
+                        Creating RLRR
+            Creating RR
+                  Creating RRL
+                        Creating RRLL
+                        Creating RRLR
+                  Creating RRR
+                        Creating RRRL
+                        Creating RRRR

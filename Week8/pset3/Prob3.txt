@@ -1,0 +1,13 @@
+Prob3.txt
+
+PSET3 - Problem 3
+
+Kuljit Takhar
+October 15 2023
+
+The loop doesn't terminate because the program adds an element at position `i` with each iteration increasing the size of the ArrayList.
+This creates an infinite loop. To fix the loop, iterate through the ArrayList in reverse order and add "NOT" in front of each word. 
+
+for (int i = a.size() - 1; i >= 0; i--) {
+    a.add(i, "NOT");
+}

@@ -1,0 +1,13 @@
+Prob2.txt
+
+PSET3 - Problem 2
+
+Kuljit Takhar
+October 15 2023
+
+A NullPointerException is an unchecked runtime exception that occurs when you attempt to invoke a method on an object that is null. 
+This exception often arises due to programming errors and cannot be reliably anticipated during the compile-time phase.
+
+Example: 
+String text = null;
+int length = text.length(); // This will throw a NullPointerException

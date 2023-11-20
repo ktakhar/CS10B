@@ -1,0 +1,36 @@
+TRAVERSE TREE (RIGHT SUBTREE, ROOT, LEFT SUBTREE)
+
+                        RRRR
+                  RRR
+                        RRRL
+            RR
+                        RRLR
+                  RRL
+                        RRLL
+      R
+                        RLRR
+                  RLR
+                        RLRL
+            RL
+                              RLLRR
+                        RLLR
+                  RLL
+                        RLLL
+                              RLLLL
+Root
+                        LRRR
+                  LRR
+                        LRRL
+            LR
+                              LRLRR
+                        LRLR
+                  LRL
+      L
+                        LLRR
+                  LLR
+                        LLRL
+            LL
+                              LLLRR
+                        LLLR
+                  LLL
+                        LLLL

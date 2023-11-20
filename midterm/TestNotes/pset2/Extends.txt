@@ -1,0 +1,17 @@
+// Extends.txt
+
+@author Kuljit Takhar
+@version September 28, 2023
+
+PSET2 #2
+
+(a) MAKES SENSE - class Oven extends Kitchen 
+(b) MAKES SENSE - class Guitar extends Instrument 
+(c) NO SENSE - class Person extends Employee 
+(d) NO SENSE - class Ferrari extends Engine 
+(e) MAKES SENSE - class FriedEgg extends Food 
+(f) MAKES SENSE - class Beagle extends Pet 
+(g) NO SENSE - class Container extends Jar
+(h) NO SENSE - class Beverage extends Martini 
+(i) NO SENSE - class Metal extends Titanium 
+(j) MAKES SENSE - class RollingStones extends RockBand 

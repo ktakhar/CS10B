@@ -1,0 +1,8 @@
+cd "01. File Class"
+javac FileClassDemo.java
+
+rem ON NEXT LINE, NOTE THE " ." COMMAND LINE ARGUMENT 
+rem (THE " ." REFERENCES THE CURRENT DIRECTORY)
+java FileClassDemo .
+
+java FileClassDemo fooSubdirectory barSubdirectory

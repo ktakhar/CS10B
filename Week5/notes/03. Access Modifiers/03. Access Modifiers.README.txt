@@ -1,0 +1,7 @@
+
+rem THESE PROGRAMS PRODUCE NO OUTPUT. THEIR VALUE IS TO DEMONSTRATE 
+rem THE COMPILER'S ENFORCEMENT OF ACCESS MODIFIERS.
+
+cd "03. Access Modifiers"
+javac fooPackage\FooClass.java
+javac barPackage\BarClass.java

@@ -1,0 +1,18 @@
+// Cell.txt
+
+@author Kuljit Takhar
+@version September 28, 2023
+
+PSET2 #1
+
+Cell c = new BloodCell(); 
+    VALID
+
+Cell c = new RedBloodCell();
+    VALID
+
+BloodCell c = new RedBloodCell();
+    VALID
+
+RedBloodCell c = new BloodCell();
+    INVALID because BloodCell is not an instance of RedBloodCell.

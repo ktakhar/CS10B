@@ -1,0 +1,114 @@
+// TextFileIO.java
+
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
+/**
+ * The TextFileIO program class copies a file.
+ * The input file is read with a Scanner object.
+ * The output file is written with a PrintWriter object.
+ *
+ * @author David Habermehl
+ * @version Last modified 13_Feb_2018
+ */
+public class TextFileIO {
+
+    //public static void main( String[] args ) {
+    public static void main( String[] args )  throws FileNotFoundException {
+        Scanner     keyboard = new Scanner( System.in );
+        Scanner     inputFileReader  = getInputFileReader( keyboard );
+        PrintWriter outputFileWriter = getOutputFileWriter( keyboard );
+        copyFile( inputFileReader, outputFileWriter );
+    }
+
+
+
+    /**
+     * getInputFileReader prompts user for input file and returns Scanner constructed from that file,
+     * repeating until a file Scanner is successfully constructed.
+     *
+     * @param  keyboard   Scanner used to read response.
+     * @return Scanner object for input file.
+     */
+    private static Scanner getInputFileReader( Scanner keyboard ) throws FileNotFoundException {
+
+        Scanner inputFileReader = null;
+        String inputFileName;
+
+        do {
+            System.out.print( "Input file: " );
+            inputFileName  = keyboard.nextLine();
+
+            // Scanner constructor throws a FileNotFoundException.
+            // That's a "checked" exception, so compiler insists that we handle it.
+            try {
+               inputFileReader  = new Scanner( new File( inputFileName ) );
+            }
+            catch( FileNotFoundException fnfe ) {
+                System.err.printf( "%s not found\n\n", inputFileName );
+            }
+        } while( inputFileReader == null );
+
+        return inputFileReader;
+    }
+
+
+
+    /**
+     * getOutputFileWriter prompts user for output file and returns PrintWriter constructed from that file,
+     * repeating until a PrintWriter is successfully constructed.
+     *
+     * @param  keyboard   Scanner used to read response.
+     * @return PrintWriter object for output file.
+     */
+    private static PrintWriter getOutputFileWriter( Scanner keyboard ) {
+
+        PrintWriter outputFileWriter = null;
+        String outputFileName;
+
+        do {
+            System.out.print( "Output file: " );
+            outputFileName = keyboard.nextLine();
+
+            // PrintWriter constructor throws a FileNotFoundException.
+            // That's a "checked" exception, so compiler insists that we handle it.
+            try {
+                outputFileWriter = new PrintWriter( outputFileName );
+            }
+            catch( FileNotFoundException fnfe ) {
+                System.err.printf( "%s cannot be opened for writing\n\n", outputFileName );
+            }
+        } while( outputFileWriter == null );
+
+        return outputFileWriter;
+    }
+
+
+
+    /**
+     * copyFile copies an input text file to an output file.
+     *
+     * @param  inputFileReader   Scanner used to read input file.
+     * @param  outputFileWriter  PrintWriter used to write output file.
+     */
+    private static void copyFile( Scanner inputFileReader, PrintWriter outputFileWriter ) {
+
+        int lineNumber = 1;
+        String nextLine;
+
+        // As long as input file has more lines, read the line, echo it to screen,
+        // and write it to output file.
+        
+        while( inputFileReader.hasNextLine() ) {
+            nextLine = inputFileReader.nextLine();
+            System.out.printf( "%4d  %s\n", lineNumber++, nextLine );
+            outputFileWriter.println( nextLine );
+        }
+
+        // Close the Scanner and the PrintWriter.
+        inputFileReader.close();
+        outputFileWriter.close();
+    }
+}

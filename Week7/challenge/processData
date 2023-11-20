@@ -1,0 +1,52 @@
+// Write a static method named processData that takes as a parameter a Scanner holding a sequence of integers and that reports cumulative sums of each line's sequence of integers, along with the average of the numbers on that line. For example, if the Scanner contains the following data:
+
+// 8 4 2 9 7
+// 13 5 9 -2
+// 2 3
+// Your method should produce the following output:
+
+// Sum of 1 = 8
+// Sum of 2 = 12
+// Sum of 3 = 14
+// Sum of 4 = 23
+// Sum of 5 = 30
+// Average = 6.0
+
+// Sum of 1 = 13
+// Sum of 2 = 18
+// Sum of 3 = 27
+// Sum of 4 = 25
+// Average = 6.25
+
+// Sum of 1 = 2
+// Sum of 2 = 5
+// Average = 2.5
+// You are to exactly reproduce the format of these sample outputs. You may assume that each line has at least one integer to be processed.
+
+// A partial solution appears below. Fill in the missing code in 3 different places, each represented by ???
+
+public static void processData(Scanner input) {
+    while (input.hasNextLine()) {
+        String line = input.nextLine();
+        Scanner lineScan = new Scanner(line);
+
+        int sum = 0;
+        int count = 0;
+        
+        // Missing code: Change the loop condition to check if lineScan has next integer.
+        while (lineScan.hasNextInt()) {
+            int value = lineScan.nextInt();
+            sum += value;
+            count++;
+            System.out.println("Sum of " + count + " = " + sum);
+        }
+
+        // Missing code: Calculate the average.
+        double average = (double) sum / count;
+
+        System.out.println("Average = " + average);
+        System.out.println();
+        
+        lineScan.close(); // Close the Scanner for the current line.
+    }
+}
