@@ -14,8 +14,7 @@ import java.io.*;                    // File I/O
 import java.awt.event.*;             // ActionListener, etc.
 import java.util.*;                  // Scanner class
 
-public class TextIO extends JFrame implements ActionListener
-{
+public class TextIO extends JFrame implements ActionListener {
     private JTextArea display =
          new JTextArea("Type text here to write into a file");
     private JLabel prompt =
@@ -31,8 +30,7 @@ public class TextIO extends JFrame implements ActionListener
     /**
      * TextIO() constructor sets up the application's interface.
      */
-    public TextIO ()
-    {                                                       // Constructor
+    public TextIO () {                                                       // Constructor
         super ("TextIO Demo");                              // Set window title
         readButton.setIcon ( new ImageIcon ("happyFace.gif"));
         readButton.addActionListener (this);
@@ -66,10 +64,8 @@ public class TextIO extends JFrame implements ActionListener
      * @param fileName -- a String giving the file's name
      * @param display -- a JTextArea where the text is displayed
      */
-    private void readTextFile (JTextArea display, String fileName)
-    {
-         try
-         {
+    private void readTextFile (JTextArea display, String fileName) {
+         try{
 	         // Create and open the stream
             Scanner input = new Scanner (new File (fileName));
 
@@ -77,8 +73,7 @@ public class TextIO extends JFrame implements ActionListener
             // String line = input.hasNextLine();
 
 	         // While more text, display a line
-            while (input.hasNextLine())
-            {
+            while (input.hasNextLine()){
                 String line = input.nextLine(); 
                 display.append (line + "\n" );
                   	
@@ -88,8 +83,7 @@ public class TextIO extends JFrame implements ActionListener
 
          }
 
-         catch (FileNotFoundException e)
-         {
+         catch (FileNotFoundException e){
             display.setText ("Sorry, File NOT Found: " + fileName + "\n");
             e.printStackTrace ();
          }
@@ -102,17 +96,14 @@ public class TextIO extends JFrame implements ActionListener
      * @param fileName -- a String giving the file's name
      * @param display -- a JTextArea where the text is stored
      */
-    private void writeTextFile (JTextArea display, String fileName)
-    {
-        try
-          {
+    private void writeTextFile (JTextArea display, String fileName){
+        try{
             PrintWriter outStream =  new PrintWriter (new File (fileName));
             outStream.print (display.getText());
             outStream.close ();
             JOptionPane.showMessageDialog (null, "File " + "was successfully created!");
           }
-          catch (IOException e)
-          {
+          catch (IOException e){
                display.setText("IOERROR: " + e.getMessage() + "\n");
                e.printStackTrace();
           }
@@ -121,12 +112,10 @@ public class TextIO extends JFrame implements ActionListener
     /**
      *  The method actionPerformed() handles clicks on the read or write buttons
      */
-    public void actionPerformed (ActionEvent evt)
-    {
+    public void actionPerformed (ActionEvent evt) {
         String fileName = nameField.getText();
 
-        if (evt.getSource() == readButton)
-        {
+        if (evt.getSource() == readButton){
             display.setText("");
             readTextFile (display, fileName);  // better to use a JFileChooser
         }
@@ -136,8 +125,7 @@ public class TextIO extends JFrame implements ActionListener
     /**
      *  main() creates an instance of this class.
      */
-    public static void main(String args[])
-    {
+    public static void main(String args[]) {
         TextIO tio = new TextIO ();
 
         tio.setSize (1000, 500);
