@@ -1,9 +1,16 @@
+// TestSetsSwing.java
+
+/**
+ * PSET 5 #1 Part C
+ * Create Swing GUI for TestSets.java
+ */
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
-public class TestSetsGUI extends JFrame {
+public class TestSetsSwing extends JFrame {
     private Set<Integer> setA = new HashSet<>();
     private Set<Integer> setB = new HashSet<>();
 
@@ -13,22 +20,27 @@ public class TestSetsGUI extends JFrame {
     private JComboBox<String> operationComboBox;
     private JButton executeButton;
 
-    public TestSetsGUI() {
-        setTitle("TestSets GUI");
+    public TestSetsSwing() {
+        // Set the title and initial size of the JFrame
+        setTitle("TestSets Swing GUI");
         setSize(1000, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        // Create the mainPanel and set its layout to BorderLayout
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
+        // Create the inputPanel to hold input components and set its layout to FlowLayout
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new FlowLayout());
 
+        // Create text fields, combo box, and execute button
         setATextField = new JTextField(20);
         setBTextField = new JTextField(20);
         operationComboBox = new JComboBox<>(new String[]{"Create SET A", "Create SET B", "Intersection (A * B)", "Union (A + B)", "Difference (A - B)", "Cardinality of SET A", "Cardinality of SET B", "Check if Subset"});
         executeButton = new JButton("Execute");
 
+        // Add labels and input components to inputPanel
         inputPanel.add(new JLabel("Set A: "));
         inputPanel.add(setATextField);
         inputPanel.add(new JLabel("Set B: "));
@@ -36,15 +48,19 @@ public class TestSetsGUI extends JFrame {
         inputPanel.add(operationComboBox);
         inputPanel.add(executeButton);
 
+        // Create the outputTextArea and make it non-editable, then add it to a scroll pane
         outputTextArea = new JTextArea();
         outputTextArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(outputTextArea);
 
+        // Add inputPanel to the top (north) and scrollPane to the center of mainPanel
         mainPanel.add(inputPanel, BorderLayout.NORTH);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
+        // Add mainPanel to the JFrame
         add(mainPanel);
 
+        // Add an action listener to the executeButton
         executeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 performOperation();
@@ -53,42 +69,49 @@ public class TestSetsGUI extends JFrame {
     }
 
     private void saveSets() {
+        // Get the text input from setATextField and setBTextField
         String setAInput = setATextField.getText();
         String setBInput = setBTextField.getText();
-        if (setAInput != null && !setAInput.isEmpty()) {
-            setA.clear();
-            String[] values = setAInput.split(" ");
-            for (String value : values) {
-                try {
-                    int num = Integer.parseInt(value.trim());
-                    setA.add(num);
-                } catch (NumberFormatException ex) {
-                    // Handle invalid input
-                }
+
+        // Clear the existing sets
+        setA.clear();
+        setB.clear();
+
+        // Split the input values by space and populate the sets with integers
+        String[] valuesA = setAInput.split(" ");
+        String[] valuesB = setBInput.split(" ");
+
+        for (String value : valuesA) {
+            try {
+                int num = Integer.parseInt(value.trim());
+                setA.add(num);
+            } catch (NumberFormatException ex) {
+                // Handle invalid input (non-integer values)
             }
         }
-        if (setBInput != null && !setBInput.isEmpty()) {
-            setB.clear();
-            String[] values = setBInput.split(" ");
-            for (String value : values) {
-                try {
-                    int num = Integer.parseInt(value.trim());
-                    setB.add(num);
-                } catch (NumberFormatException ex) {
-                    // Handle invalid input
-                }
+
+        for (String value : valuesB) {
+            try {
+                int num = Integer.parseInt(value.trim());
+                setB.add(num);
+            } catch (NumberFormatException ex) {
+                // Handle invalid input (non-integer values)
             }
         }
     }
 
     private void performOperation() {
-        saveSets(); // Save sets before performing any operation
+        // Save sets before performing any operation
+        saveSets();
 
+        // Get the selected operation from the combo box
         String selectedOperation = (String) operationComboBox.getSelectedItem();
+
         if (selectedOperation == null) {
             return;
         }
 
+        // Perform the selected operation and update the outputTextArea accordingly
         switch (selectedOperation) {
             case "Create SET A":
                 outputTextArea.setText("Set A = " + setA + "\n");
@@ -140,7 +163,7 @@ public class TestSetsGUI extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                TestSetsGUI gui = new TestSetsGUI();
+                TestSetsSwing gui = new TestSetsSwing();
                 gui.setVisible(true);
             }
         });

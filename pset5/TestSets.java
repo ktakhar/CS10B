@@ -84,6 +84,7 @@ public class TestSets
             /**
              * PSET 5 #1 Part B
              * Modify TestSet to include isSubset() instance method
+             * Check if Set A is a subset of B or if Set B is a subset of A
              */
 
             case 8:

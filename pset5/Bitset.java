@@ -1,10 +1,9 @@
 /** Bitset.java
- *
- *  Stores sets of small integers, in the range 0 .. maxSize-1, 
- *    for user-specified 'maxSize'
- *
- *  NOT related to java.util.Bitset!
- *  Last Modified April 6, 2020
+ * 
+ * PSET 5 #1 Part A - Line 362 - Cardinality()
+ * PSET 5 #1 Part B - Line 383 - isSubset()
+ * 
+ * @author Kuljit Takhar [Part A and Part B]
  */
 
 import java.util.*;
@@ -355,9 +354,10 @@ class Bitset
         System.out.print (" " + msg);
         System.exit (1);
     }
-
-    /** PSET 5 #1 Part A
-     * Cardinality instance method
+    
+    /** 
+     * PSET 5 #1 Part A
+     * cardinality() instance method
      */
 
    public int cardinality() {
@@ -378,7 +378,7 @@ class Bitset
 
     /**
      * PSET 5 #1 Part B
-     * 
+     * isSubset() instance method
      */
 
    public boolean isSubset(Bitset setA, Bitset setB) {
