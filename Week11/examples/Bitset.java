@@ -355,48 +355,4 @@ class Bitset
         System.out.print (" " + msg);
         System.exit (1);
     }
-
-    /** PSET 5 #1 Part A
-     * Cardinality instance method
-     */
-
-   public int cardinality() {
-    int count = 0; // Initialize a count variable to keep track of the number of set bits
-
-    for (int i = 0; i < byteArray.length; i++) { // Loop through the byteArray
-        byte currentByte = byteArray[i]; // Get the current byte from the byteArray
-        
-        while (currentByte != 0) { // Continue processing bits until the currentByte becomes 0
-            count += currentByte & 1; // Check the least significant bit (LSB) of the currentByte and add its value to the count if it's set (1)
-            currentByte >>= 1; // Right-shift the currentByte by one position to check the next bit
-        }
-    }
-    
-    return count; // Return the total count of set bits in the byteArray, which represents the cardinality of the set.
-    
-    }
-
-    /**
-     * PSET 5 #1 Part B
-     * 
-     */
-
-   public boolean isSubset(Bitset setA, Bitset setB) {
-        boolean isSubsetAB = true; // Initialize to check if Set A is a subset of Set B
-        boolean isSubsetBA = true; // Initialize to check if Set B is a subset of Set A
-
-        for (int i = 0; i < setA.maxSize; i++) {
-            if (setA.member(i) && !setB.member(i)) {
-            isSubsetAB = false; // Set A is not a subset of Set B
-            }
-        }
-
-        for (int i = 0; i < setB.maxSize; i++) {
-            if (setB.member(i) && !setA.member(i)) {
-            isSubsetBA = false; // Set B is not a subset of Set A
-            }
-        }
-
-        return isSubsetAB || isSubsetBA; // Either A is a subset of B or B is a subset of A
-    }
 }

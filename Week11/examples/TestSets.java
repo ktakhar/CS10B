@@ -17,9 +17,6 @@ public class TestSets
      System.out.print ("Type 3 to CREATE INTERSECTION (A * B)\n");
      System.out.print ("Type 4 to CREATE UNION (A + B)\n");
      System.out.print ("Type 5 to CREATE DIFFERENCE (A - B)\n");
-     System.out.print ("Type 6 to CALCULATE CARDINALITY OF SET A\n");
-     System.out.print ("Type 7 to CALCULATE CARDINALITY OF SET B\n");
-     System.out.print("Type 8 to CHECK IF SET A IS A SUBSET OF SET B\n");
      System.out.print ("Type any OTHER # to EXIT PROGRAM \n\n");
      System.out.print ("Command: ");
   }
@@ -66,42 +63,9 @@ public class TestSets
               System.out.print (setA.difference(setB));
               break;
 
-           /**
-            *  PSET 5 #1 Part A
-            *  Modify TestSet to include cardinality instance method
-            * */ 
-
-           case 6:
-              System.out.print ("    Cardinality of SET A = "); 
-              System.out.print (setA.cardinality()); // apply cardinality() method to setA
-              break;
-
-            case 7:
-              System.out.print ("    Cardinality of SET B = ");
-              System.out.print (setB.cardinality()); // apply cadinarlity() method to set B
-              break;
-            
-            /**
-             * PSET 5 #1 Part B
-             * Modify TestSet to include isSubset() instance method
-             */
-
-            case 8:
-                boolean isSubsetAB = setA.isSubset(setA, setB);
-                boolean isSubsetBA = setB.isSubset(setB, setA);
-                    if (isSubsetAB && isSubsetBA) {
-                         System.out.println("     SET A is equal to SET B");
-                    } else if (isSubsetAB) {
-                        System.out.println("     SET A is a subset of SET B");
-                    } else if (isSubsetBA) {
-                        System.out.println("     SET B is a subset of SET A");
-                    } else {
-                        System.out.println("     Neither SET A nor SET B is a subset of the other");
-                    }
-                    break;
-
-            default:  System.exit(0);
+           default:  System.exit(0);
+        
          }
-       } while (command > 0 && command < 8);  // change int to 8 to include new switch cases
+       } while (command > 0 && command < 6);
   }
 }
