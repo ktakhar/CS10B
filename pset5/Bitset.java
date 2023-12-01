@@ -2,10 +2,12 @@
 
 /** 
  * 
- * PSET 5 #1 Part A - Line 362 - Cardinality()
+ * PSET 5 #1 Part A - Line 362 - cardinality()
  * PSET 5 #1 Part B - Line 383 - isSubset()
  * 
  * @author Kuljit Takhar [Part A and Part B]
+ * @version November 23 2024
+ * 
  */
 
 import java.util.*;
