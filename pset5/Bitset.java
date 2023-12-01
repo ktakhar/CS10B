@@ -1,4 +1,6 @@
-/** Bitset.java
+// Bitset.java
+
+/** 
  * 
  * PSET 5 #1 Part A - Line 362 - Cardinality()
  * PSET 5 #1 Part B - Line 383 - isSubset()
