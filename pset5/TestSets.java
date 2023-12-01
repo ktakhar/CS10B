@@ -1,11 +1,11 @@
 // TestSets.java
 
 /**
-*  PSET 5 #1 Part A - Line 77
-*  PSET 5 #1 Part B - Line 93
+*  PSET 5 #1 Part A - Line 72
+*  PSET 5 #1 Part B - Line 87
 *
-*  @version: Last Modified April 8, 2020
-*  @author:  Henry Leitner
+*  @author Kuljit Takhar [Part A & Part B]
+*  @version November 23 2024
 */
 
 import java.util.*;
@@ -94,7 +94,7 @@ public class TestSets
                 boolean isSubsetAB = setA.isSubset(setA, setB);
                 boolean isSubsetBA = setB.isSubset(setB, setA);
                     if (isSubsetAB && isSubsetBA) {
-                         System.out.println("     SET A is equal to SET B");
+                         System.out.println("    SET A is equal to SET B");
                     } else if (isSubsetAB) {
                         System.out.println("     SET A is a subset of SET B");
                     } else if (isSubsetBA) {

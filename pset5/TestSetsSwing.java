@@ -3,6 +3,9 @@
 /**
  * PSET 5 #1 Part C
  * Create Swing GUI for TestSets.java
+ * 
+ * @author Kuljit Takhar
+ * @version November 23 2024
  */
 
 import java.awt.*;

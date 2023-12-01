@@ -1,6 +1,15 @@
 // LinkedDequeue.java
 
 /**
+ * PSET 5 #2
+ * Double-ended queue (deque) data structure
+ * Singly-linked list implementation
+ * Methods: 
+ * adding and removing elements from both ends 
+ * checking its status
+ * providing a string representation of its contents
+ * handling exceptions for underflow conditions
+ * 
  * @author Kuljit Takhar
  * @version Novemeber 30, 2023
  * 
