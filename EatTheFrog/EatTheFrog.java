@@ -4,7 +4,7 @@ import java.awt.event.*;
 import java.util.*;
 import java.text.*;
 
-public class TaskManagerApp<T extends Task> extends JFrame {
+public class EatTheFrog<T extends Task> extends JFrame {
     private JTextField titleField, descriptionField;
     private JComboBox<String> priorityComboBox;
     private DefaultListModel<T> taskListModel;
@@ -21,7 +21,7 @@ public class TaskManagerApp<T extends Task> extends JFrame {
     private int editingTaskIndex;
     private T selectedTaskForDeletion;
 
-    public TaskManagerApp() {
+    public EatTheFrog() {
         setTitle("Task Manager");
         setSize(400, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -263,7 +263,7 @@ public class TaskManagerApp<T extends Task> extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                TaskManagerApp<Task> app = new TaskManagerApp<>();
+                EatTheFrog<Task> app = new EatTheFrog<>();
                 app.setVisible(true);
             }
         });
@@ -328,7 +328,7 @@ class Task implements Comparable<Task> {
 
     @Override
     public String toString() {
-        // Include description in task list information after priority
-        return title + " [Priority: " + priority + "] - " + description;
+        // List task, description, and priority level
+       return title + "\t" + description + "\t" + "\t Priority: " + priority;
     }
 }
