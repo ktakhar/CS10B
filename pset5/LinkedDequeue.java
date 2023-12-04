@@ -15,6 +15,7 @@
  * 
  */
 
+// A class representing a node in the dequeue.
 class QueueNode {
     private Object item;        // Data stored in the node
     private QueueNode link;     // Reference to the next node
@@ -57,6 +58,7 @@ class QueueNode {
     }
 }
 
+// A class representing a double-ended queue (deque).
 public class LinkedDequeue {
     private QueueNode tail;     // Rear of the dequeue
     private QueueNode head;     // Front of the dequeue
@@ -217,34 +219,10 @@ public class LinkedDequeue {
         return result.toString();
     }
 
-    public static void main(String[] args) {
-        LinkedDequeue dequeue = new LinkedDequeue();
-
-        // Adding elements to both ends of the dequeue
-        dequeue.headAdd("First");
-        dequeue.tailAdd("Last");
-
-        // Peeking at the head and tail
-        System.out.println("Head Peek: " + dequeue.headPeek());
-        System.out.println("Tail Peek: " + dequeue.tailPeek());
-
-        // Removing elements from both ends
-        System.out.println("Removed from head: " + dequeue.headRemove());
-        System.out.println("Removed from tail: " + dequeue.tailRemove());
-
-        // Checking size and emptiness
-        System.out.println("Size: " + dequeue.size());
-        System.out.println("Is Empty: " + dequeue.isEmpty());
-
-        // Displaying the contents of the dequeue
-        System.out.println("Contents:");
-        System.out.println(dequeue);
-    }
-}
-
-// Custom exception class for Dequeue underflow
-class DequeueUnderFlowException extends RuntimeException {
-    public DequeueUnderFlowException(String message) {
-        super(message);
+    // Custom exception class for Dequeue underflow
+    public class DequeueUnderFlowException extends RuntimeException {
+        public DequeueUnderFlowException(String message) {
+            super(message);
+        }
     }
 }
