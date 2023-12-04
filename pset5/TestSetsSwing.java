@@ -14,15 +14,16 @@ import java.util.*;
 import javax.swing.*;
 
 public class TestSetsSwing extends JFrame {
-    private Set<Integer> setA = new HashSet<>();
-    private Set<Integer> setB = new HashSet<>();
+    private Set<Integer> setA = new HashSet<>(); // Initialize Set A
+    private Set<Integer> setB = new HashSet<>(); // Initialize Set B
 
-    private JTextArea outputTextArea;
-    private JTextField setATextField;
-    private JTextField setBTextField;
-    private JComboBox<String> operationComboBox;
-    private JButton executeButton;
+    private JTextArea outputTextArea; // TextArea to display output
+    private JTextField setATextField; // TextField for input of Set A
+    private JTextField setBTextField; // TextField for input of Set B
+    private JComboBox<String> operationComboBox; // ComboBox for selecting operations
+    private JButton executeButton; // Button to execute selected operation
 
+    // Constructor for the TestSetsSwing class
     public TestSetsSwing() {
         // Set the title and initial size of the JFrame
         setTitle("TestSets Swing GUI");
@@ -38,18 +39,18 @@ public class TestSetsSwing extends JFrame {
         inputPanel.setLayout(new FlowLayout());
 
         // Create text fields, combo box, and execute button
-        setATextField = new JTextField(20);
-        setBTextField = new JTextField(20);
-        operationComboBox = new JComboBox<>(new String[]{"Create SET A", "Create SET B", "Intersection (A * B)", "Union (A + B)", "Difference (A - B)", "Cardinality of SET A", "Cardinality of SET B", "Check if Subset"});
-        executeButton = new JButton("Execute");
+        setATextField = new JTextField(20); // TextField for Set A input
+        setBTextField = new JTextField(20); // TextField for Set B input
+        operationComboBox = new JComboBox<>(new String[]{"Create SET A", "Create SET B", "Intersection (A * B)", "Union (A + B)", "Difference (A - B)", "Cardinality of SET A", "Cardinality of SET B", "Check if Subset"}); // ComboBox for operations
+        executeButton = new JButton("Execute"); // Button to execute operations
 
         // Add labels and input components to inputPanel
-        inputPanel.add(new JLabel("Set A: "));
-        inputPanel.add(setATextField);
-        inputPanel.add(new JLabel("Set B: "));
-        inputPanel.add(setBTextField);
-        inputPanel.add(operationComboBox);
-        inputPanel.add(executeButton);
+        inputPanel.add(new JLabel("Set A: ")); // Label for Set A
+        inputPanel.add(setATextField); // TextField for Set A input
+        inputPanel.add(new JLabel("Set B: ")); // Label for Set B
+        inputPanel.add(setBTextField); // TextField for Set B input
+        inputPanel.add(operationComboBox); // ComboBox for operations
+        inputPanel.add(executeButton); // Button to execute operations
 
         // Create the outputTextArea and make it non-editable, then add it to a scroll pane
         outputTextArea = new JTextArea();
@@ -66,11 +67,17 @@ public class TestSetsSwing extends JFrame {
         // Add an action listener to the executeButton
         executeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                performOperation();
+                performOperation(); // Execute the selected operation
             }
         });
     }
 
+    // Helper method to update the outputTextArea
+    private void updateTextArea(String text) {
+        outputTextArea.append(text + "\n"); // Append the new text to the existing text
+    }
+
+    // Helper method to save the input sets from text fields
     private void saveSets() {
         // Get the text input from setATextField and setBTextField
         String setAInput = setATextField.getText();
@@ -103,59 +110,56 @@ public class TestSetsSwing extends JFrame {
         }
     }
 
+    // Helper method to perform the selected operation and update the outputTextArea
     private void performOperation() {
-        // Save sets before performing any operation
-        saveSets();
-
-        // Get the selected operation from the combo box
-        String selectedOperation = (String) operationComboBox.getSelectedItem();
+        saveSets(); // Save the input sets from text fields
+        String selectedOperation = (String) operationComboBox.getSelectedItem(); // Get the selected operation from the combo box
 
         if (selectedOperation == null) {
             return;
         }
 
-        // Perform the selected operation and update the outputTextArea accordingly
         switch (selectedOperation) {
             case "Create SET A":
-                outputTextArea.setText("Set A = " + setA + "\n");
+                updateTextArea("Set A = " + setA); // Display Set A
                 break;
             case "Create SET B":
-                outputTextArea.setText("Set B = " + setB + "\n");
+                updateTextArea("Set B = " + setB); // Display Set B
                 break;
             case "Intersection (A * B)":
                 Set<Integer> intersection = new HashSet<>(setA);
-                intersection.retainAll(setB);
-                outputTextArea.setText("Intersection (A * B): " + intersection + "\n");
+                intersection.retainAll(setB); // Find the intersection of Set A and Set B
+                updateTextArea("Intersection (A * B): " + intersection); // Display the intersection
                 break;
             case "Union (A + B)":
                 Set<Integer> union = new HashSet<>(setA);
-                union.addAll(setB);
-                outputTextArea.setText("Union (A + B): " + union + "\n");
+                union.addAll(setB); // Find the union of Set A and Set B
+                updateTextArea("Union (A + B): " + union); // Display the union
                 break;
             case "Difference (A - B)":
                 Set<Integer> difference = new HashSet<>(setA);
-                difference.removeAll(setB);
-                outputTextArea.setText("Difference (A - B): " + difference + "\n");
+                difference.removeAll(setB); // Find the difference of Set A and Set B
+                updateTextArea("Difference (A - B): " + difference); // Display the difference
                 break;
             case "Cardinality of SET A":
-                int cardinalityA = setA.size();
-                outputTextArea.setText("Cardinality of SET A: " + cardinalityA + "\n");
+                int cardinalityA = setA.size(); // Calculate the cardinality of Set A
+                updateTextArea("Cardinality of SET A: " + cardinalityA); // Display the cardinality
                 break;
             case "Cardinality of SET B":
-                int cardinalityB = setB.size();
-                outputTextArea.setText("Cardinality of SET B: " + cardinalityB + "\n");
+                int cardinalityB = setB.size(); // Calculate the cardinality of Set B
+                updateTextArea("Cardinality of SET B: " + cardinalityB); // Display the cardinality
                 break;
             case "Check if Subset":
-                boolean isSubsetAB = setB.containsAll(setA);
-                boolean isSubsetBA = setA.containsAll(setB);
+                boolean isSubsetAB = setB.containsAll(setA); // Check if Set A is a subset of Set B
+                boolean isSubsetBA = setA.containsAll(setB); // Check if Set B is a subset of Set A
                 if (isSubsetAB && isSubsetBA) {
-                    outputTextArea.setText("SET A is equal to SET B\n");
+                    updateTextArea("SET A is equal to SET B"); // Display equality
                 } else if (isSubsetAB) {
-                    outputTextArea.setText("SET A is a subset of SET B\n");
+                    updateTextArea("SET A is a subset of SET B"); // Display A as a subset of B
                 } else if (isSubsetBA) {
-                    outputTextArea.setText("SET B is a subset of SET A\n");
+                    updateTextArea("SET B is a subset of SET A"); // Display B as a subset of A
                 } else {
-                    outputTextArea.setText("Neither SET A nor SET B is a subset of the other\n");
+                    updateTextArea("Neither SET A nor SET B is a subset of the other"); // Display no subset relationship
                 }
                 break;
             default:
@@ -163,11 +167,12 @@ public class TestSetsSwing extends JFrame {
         }
     }
 
+    // Main method to start the Swing application
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 TestSetsSwing gui = new TestSetsSwing();
-                gui.setVisible(true);
+                gui.setVisible(true); // Make the GUI visible
             }
         });
     }

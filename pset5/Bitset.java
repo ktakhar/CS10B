@@ -362,27 +362,32 @@ class Bitset
     /** 
      * PSET 5 #1 Part A
      * cardinality() instance method
+     * 
+     * @return The cardinality (number of set bits of the bitset)
      */
-
-   public int cardinality() {
+    public int cardinality() {
     int count = 0; // Initialize a count variable to keep track of the number of set bits
 
-    for (int i = 0; i < byteArray.length; i++) { // Loop through the byteArray
-        byte currentByte = byteArray[i]; // Get the current byte from the byteArray
+        for (int i = 0; i < byteArray.length; i++) { // Loop through the byteArray
+            byte currentByte = byteArray[i]; // Get the current byte from the byteArray
         
-        while (currentByte != 0) { // Continue processing bits until the currentByte becomes 0
-            count += currentByte & 1; // Check the least significant bit (LSB) of the currentByte and add its value to the count if it's set (1)
-            currentByte >>= 1; // Right-shift the currentByte by one position to check the next bit
+            while (currentByte != 0) { // Continue processing bits until the currentByte becomes 0
+                count += currentByte & 1; // Check the least significant bit (LSB) of the currentByte and add its value to the count if it's set (1)
+                currentByte >>= 1; // Right-shift the currentByte by one position to check the next bit
+            }
         }
-    }
     
-    return count; // Return the total count of set bits in the byteArray, which represents the cardinality of the set.
+        return count; // Return the total count of set bits in the byteArray, which represents the cardinality of the set.
     
     }
 
     /**
      * PSET 5 #1 Part B
      * isSubset() instance method
+     * 
+     * @param setA The first Bitset
+     * @param setB the second Bitset
+     * @return True if setA is a subset of setB or setB is a subset of setA
      */
 
    public boolean isSubset(Bitset setA, Bitset setB) {

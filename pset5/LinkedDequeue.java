@@ -15,123 +15,236 @@
  * 
  */
 
-import java.util.LinkedList;
+class QueueNode {
+    private Object item;        // Data stored in the node
+    private QueueNode link;     // Reference to the next node
+
+    /**
+     * Constructor to create a new QueueNode with the specified item.
+     *
+     * @param item The data to be stored in the node.
+     */
+    public QueueNode(Object item) {
+        this.item = item;
+        this.link = null;        // Initialize link to null since this is the last node in the beginning.
+    }
+
+    /**
+     * Get the item (data) stored in this node.
+     *
+     * @return The item stored in the node.
+     */
+    public Object getItem() {
+        return item;
+    }
+
+    /**
+     * Get the reference to the next node in the list.
+     *
+     * @return The next node in the list.
+     */
+    public QueueNode getLink() {
+        return link;
+    }
+
+    /**
+     * Set the reference to the next node in the list.
+     *
+     * @param link The next node to be linked to this node.
+     */
+    public void setLink(QueueNode link) {
+        this.link = link;
+    }
+}
+
+public class LinkedDequeue {
+    private QueueNode tail;     // Rear of the dequeue
+    private QueueNode head;     // Front of the dequeue
+    private int count;          // Number of elements in the dequeue
+
+    /**
+     * Constructor to create an empty LinkedDequeue.
+     */
+    public LinkedDequeue() {
+        head = null;
+        tail = null;
+        count = 0;
+    }
+
+    /**
+     * Insert an item into the Dequeue at the head.
+     *
+     * @param item The item to be added to the head of the Dequeue.
+     */
+    public void headAdd(Object item) {
+        QueueNode newNode = new QueueNode(item);
+        if (isEmpty()) {
+            head = newNode;
+            tail = newNode;
+        } else {
+            newNode.setLink(head);
+            head = newNode;
+        }
+        count++;
+    }
+
+    /**
+     * Peek at the head of the Dequeue.
+     *
+     * @return The item at the head of the Dequeue.
+     * @throws DequeueUnderFlowException if the Dequeue is empty.
+     */
+    public Object headPeek() {
+        if (!isEmpty()) {
+            return head.getItem();
+        }
+        throw new DequeueUnderFlowException("Cannot peek at an empty Dequeue");
+    }
+
+    /**
+     * Remove an item from the head of the Dequeue.
+     *
+     * @return The removed item from the head of the Dequeue.
+     * @throws DequeueUnderFlowException if the Dequeue is empty.
+     */
+    public Object headRemove() {
+        if (!isEmpty()) {
+            Object removedItem = head.getItem();
+            head = head.getLink();
+            count--;
+            if (isEmpty()) {
+                tail = null; // If Dequeue becomes empty, update tail reference
+            }
+            return removedItem;
+        }
+        throw new DequeueUnderFlowException("Cannot remove from an empty Dequeue");
+    }
+
+    /**
+     * Check if the Dequeue is empty.
+     *
+     * @return true if the Dequeue is empty, false otherwise.
+     */
+    public boolean isEmpty() {
+        return count == 0;
+    }
+
+    /**
+     * Get the number of elements currently in the Dequeue.
+     *
+     * @return The number of elements in the Dequeue.
+     */
+    public int size() {
+        return count;
+    }
+
+    /**
+     * Insert an item into the Dequeue at the tail.
+     *
+     * @param item The item to be added to the tail of the Dequeue.
+     */
+    public void tailAdd(Object item) {
+        QueueNode newNode = new QueueNode(item);
+        if (isEmpty()) {
+            head = newNode;
+            tail = newNode;
+        } else {
+            tail.setLink(newNode);
+            tail = newNode;
+        }
+        count++;
+    }
+
+    /**
+     * Peek at the tail of the Dequeue.
+     *
+     * @return The item at the tail of the Dequeue.
+     * @throws DequeueUnderFlowException if the Dequeue is empty.
+     */
+    public Object tailPeek() {
+        if (!isEmpty()) {
+            return tail.getItem();
+        }
+        throw new DequeueUnderFlowException("Cannot peek at an empty Dequeue");
+    }
+
+    /**
+     * Remove an item from the tail of the Dequeue.
+     *
+     * @return The removed item from the tail of the Dequeue.
+     * @throws DequeueUnderFlowException if the Dequeue is empty.
+     */
+    public Object tailRemove() {
+        if (!isEmpty()) {
+            if (count == 1) {
+                Object removedItem = tail.getItem();
+                head = null;
+                tail = null;
+                count = 0;
+                return removedItem;
+            } else {
+                Object removedItem = tail.getItem();
+                QueueNode current = head;
+                while (current.getLink() != tail) {
+                    current = current.getLink();
+                }
+                tail = current;
+                tail.setLink(null);
+                count--;
+                return removedItem;
+            }
+        }
+        throw new DequeueUnderFlowException("Cannot remove from an empty Dequeue");
+    }
+
+    /**
+     * Generate a string representation of the Dequeue.
+     *
+     * @return A string containing all objects in the Dequeue, from head to tail.
+     */
+    @Override
+    public String toString() {
+        if (isEmpty()) {
+            return "Dequeue is empty.";
+        }
+
+        StringBuilder result = new StringBuilder();
+        QueueNode current = head;
+        while (current != null) {
+            result.append(current.getItem()).append("\n");
+            current = current.getLink();
+        }
+        return result.toString();
+    }
+
+    public static void main(String[] args) {
+        LinkedDequeue dequeue = new LinkedDequeue();
+
+        // Adding elements to both ends of the dequeue
+        dequeue.headAdd("First");
+        dequeue.tailAdd("Last");
+
+        // Peeking at the head and tail
+        System.out.println("Head Peek: " + dequeue.headPeek());
+        System.out.println("Tail Peek: " + dequeue.tailPeek());
+
+        // Removing elements from both ends
+        System.out.println("Removed from head: " + dequeue.headRemove());
+        System.out.println("Removed from tail: " + dequeue.tailRemove());
+
+        // Checking size and emptiness
+        System.out.println("Size: " + dequeue.size());
+        System.out.println("Is Empty: " + dequeue.isEmpty());
+
+        // Displaying the contents of the dequeue
+        System.out.println("Contents:");
+        System.out.println(dequeue);
+    }
+}
 
 // Custom exception class for Dequeue underflow
 class DequeueUnderFlowException extends RuntimeException {
     public DequeueUnderFlowException(String message) {
         super(message);
-    }
-}
-
-class LinkedDequeue<E> {
-    // Data members (private)
-    private LinkedList<E> deque; // LinkedList to store elements of the Dequeue
-
-        // Main Method
-    public static void main(String[] args) {
-        LinkedDequeue<String> mustangsDeque = new LinkedDequeue<>();
-
-        // Add elements to the head and tail of the Dequeue
-        mustangsDeque.headAdd("Shelby");
-        mustangsDeque.tailAdd("Cobra");
-        mustangsDeque.tailAdd("Bullit");
-        mustangsDeque.tailAdd("Boss");
-
-        // Peek at the head and tail of the Dequeue
-        String headPeekResult = mustangsDeque.headPeek();
-        String tailPeekResult = mustangsDeque.tailPeek();
-
-        System.out.println("Head Peek: " + headPeekResult);
-        System.out.println("Tail Peek: " + tailPeekResult);
-
-        // Remove elements from the head and tail of the Dequeue
-        String removedFromHead = mustangsDeque.headRemove();
-        String removedFromTail = mustangsDeque.tailRemove();
-
-        System.out.println("Removed from head: " + removedFromHead);
-        System.out.println("Removed from tail: " + removedFromTail);
-
-        // Check the size and whether the Dequeue is empty
-        int size = mustangsDeque.size();
-        boolean isEmpty = mustangsDeque.isEmpty();
-
-        System.out.println("Size: " + size);
-        System.out.println("Is Empty: " + isEmpty);
-
-        // Display the updated contents of the Dequeue
-        System.out.println("Updated Dequeue contents:");
-        System.out.println(mustangsDeque);
-    }
-
-    // Constructor
-    public LinkedDequeue() {
-        deque = new LinkedList<>(); // Initialize the LinkedList in the constructor
-    }
-
-    // Add an element to the head of the Dequeue
-    void headAdd(E item) {
-        deque.addFirst(item);
-    }
-
-    // Peek at the element at the head of the Dequeue (without removing it)
-    E headPeek() {
-        if (!isEmpty()) { // Check if the Dequeue is not empty
-            return deque.getFirst(); // Return the first element
-        }
-        throw new DequeueUnderFlowException("Cannot peek at an empty Dequeue");
-    }
-
-    // Remove and return the element from the head of the Dequeue
-    E headRemove() {
-        if (!isEmpty()) { // Check if the Dequeue is not empty
-            return deque.removeFirst(); // Remove and return the first element
-        }
-        throw new DequeueUnderFlowException("Cannot remove from an empty Dequeue");
-    }
-
-    // Check if the Dequeue is empty
-    boolean isEmpty() {
-        return deque.isEmpty();
-    }
-
-    // Get the number of elements currently in the Dequeue
-    int size() {
-        return deque.size();
-    }
-
-    // Add an element to the tail of the Dequeue
-    void tailAdd(E item) {
-        deque.addLast(item);
-    }
-
-    // Peek at the element at the tail of the Dequeue (without removing it)
-    E tailPeek() {
-        if (!isEmpty()) { // Check if the Dequeue is not empty
-            return deque.getLast(); // Return the last element
-        }
-        throw new DequeueUnderFlowException("Cannot peek at an empty Dequeue");
-    }
-
-    // Remove and return the element from the tail of the Dequeue
-    E tailRemove() {
-        if (!isEmpty()) { // Check if the Dequeue is not empty
-            return deque.removeLast(); // Remove and return the last element
-        }
-        throw new DequeueUnderFlowException("Cannot remove from an empty Dequeue");
-    }
-    
-    // Generate a string representation of the Dequeue
-    @Override
-    public String toString() {
-        if (isEmpty()) {
-            return "Deque is empty."; // Return a message if the Dequeue is empty
-        }
-
-        StringBuilder result = new StringBuilder();
-        for (E item : deque) {
-            result.append(item).append("\n"); // Append each element to the result on a separate line
-        }
-        return result.toString(); // Return the concatenated string
     }
 }
