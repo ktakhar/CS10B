@@ -15,7 +15,7 @@ class BankAccount {
     public class BankAccount{
         this.balance = balance;
         this.withdraw = withdraw;
-        this.desposit = deposity;
+        this.desposit = deposit;
     }
 
     static double setWithdraw(double withdraw) {
