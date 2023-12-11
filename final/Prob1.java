@@ -9,10 +9,10 @@ public class Prob1 {
     public static void prob1(ArrayList<Integer> list) {
         for (int i = list.size() - 1; i>=0; i--) { // i = 2 (last index)
             if (i % 2 == 0) { // i is even
-                list.add(list.get(i)); 
+                list.add(list.get(i)); // add to end
             }
             else {
-                list.add(0, list.get (i));
+                list.add(0, list.get(i)); // add to [0]
             }
         } System.out.println(list);
     }
@@ -26,6 +26,7 @@ public class Prob1 {
 
         prob1(list);
     }
+}
 
     // i = 2 -> 2 % 2 == 0 (True) list[2] = 30 (add to end) list = { 10, 20, 30, 30 }
     // i = 1 -> 1 % 2 == 0 (False) list[1] = 20 (add to beginning) list = { 20, 10, 20, 30, 30 }

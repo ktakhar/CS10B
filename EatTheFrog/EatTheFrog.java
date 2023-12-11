@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.*;
 import java.text.*;
 
@@ -21,11 +22,12 @@ public class EatTheFrog<T extends Task> extends JFrame {
     private int editingTaskIndex;
     private T selectedTaskForDeletion;
 
+    private final String fileName = "eatthefrog.txt";
+
     public EatTheFrog() {
-        setTitle("Task Manager");
+        setTitle("Eat The Frog!");
         setSize(400, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-
         getContentPane().setBackground(Color.BLACK);
         Font h1 = new Font("Arial", Font.PLAIN, 24);
         Font h2 = new Font("Arial", Font.PLAIN, 18);
@@ -43,7 +45,7 @@ public class EatTheFrog<T extends Task> extends JFrame {
         add(scrollPane, BorderLayout.CENTER);
 
         JPanel inputPanel = new JPanel(new GridLayout(4, 2));
-        
+
         inputPanel.add(new JLabel("Task:"));
         titleField = new JTextField();
         inputPanel.add(titleField);
@@ -66,7 +68,7 @@ public class EatTheFrog<T extends Task> extends JFrame {
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                editOrSaveTask(); // Change the button label dynamically
+                editTask(); // Change the button label dynamically
             }
         });
 
@@ -82,7 +84,7 @@ public class EatTheFrog<T extends Task> extends JFrame {
         completedCheckBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                markAsCompleted();
+                completed();
             }
         });
 
@@ -94,6 +96,9 @@ public class EatTheFrog<T extends Task> extends JFrame {
 
         add(inputPanel, BorderLayout.NORTH);
         add(buttonPanel, BorderLayout.SOUTH);
+
+        // Load tasks from file on application startup
+        loadTasksFromFile();
     }
 
     private void addTask() {
@@ -114,6 +119,9 @@ public class EatTheFrog<T extends Task> extends JFrame {
                 sortTaskListModel();
 
                 clearFields();
+
+                // Save tasks to file after adding a task
+                saveTasksToFile();
             } else {
                 JOptionPane.showMessageDialog(this, "Task already exists.");
             }
@@ -122,7 +130,7 @@ public class EatTheFrog<T extends Task> extends JFrame {
         }
     }
 
-    private void editOrSaveTask() {
+    private void editTask() {
         int selectedIndex = taskList.getSelectedIndex();
         if (selectedIndex >= 0) {
             if (editingTask == null) { // Enter edit mode
@@ -163,6 +171,9 @@ public class EatTheFrog<T extends Task> extends JFrame {
                     editButton.setText("Edit Task"); // Change the button label back to "Edit Task"
 
                     editingTask = null; // Reset the editing task
+
+                    // Save tasks to file after editing a task
+                    saveTasksToFile();
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(this, "Invalid input. Please check the values.");
                 }
@@ -184,13 +195,16 @@ public class EatTheFrog<T extends Task> extends JFrame {
                 taskSet.remove(selectedTaskForDeletion);
                 taskListModel.removeElement(selectedTaskForDeletion);
                 clearFields();
+
+                // Save tasks to file after deleting a task
+                saveTasksToFile();
             }
         } else {
             JOptionPane.showMessageDialog(this, "Select a task to delete.");
         }
     }
 
-    private void markAsCompleted() {
+    private void completed() {
         int selectedIndex = taskList.getSelectedIndex();
         if (selectedIndex >= 0) {
             T selectedTask = taskList.getSelectedValue();
@@ -211,6 +225,9 @@ public class EatTheFrog<T extends Task> extends JFrame {
                 }
 
                 clearFields();
+
+                // Save tasks to file after completing a task
+                saveTasksToFile();
             }
         } else {
             JOptionPane.showMessageDialog(this, "Select a task to mark as completed.");
@@ -257,6 +274,46 @@ public class EatTheFrog<T extends Task> extends JFrame {
         taskListModel.clear();
         for (T task : tasks) {
             taskListModel.addElement(task);
+        }
+    }
+
+    // Load tasks from file
+    private void loadTasksFromFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\t");
+                if (parts.length == 4) {
+                    String title = parts[0];
+                    String description = parts[1];
+                    int priority = Integer.parseInt(parts[2]);
+                    boolean completed = Boolean.parseBoolean(parts[3]);
+
+                    T loadedTask = createTask(title, description, priority);
+                    setTaskCompleted(loadedTask, completed);
+
+                    taskMap.put(loadedTask.hashCode(), loadedTask);
+                    taskSet.add(loadedTask);
+                    taskListModel.addElement(loadedTask);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            // Handle the case where the file does not exist (it will be created when tasks are saved)
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Save tasks to file
+    private void saveTasksToFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (int i = 0; i < taskListModel.getSize(); i++) {
+                T task = taskListModel.getElementAt(i);
+                writer.write(task.getTitle() + "\t" + task.getDescription() + "\t" + task.getPriority() + "\t" + task.isCompleted());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -329,6 +386,6 @@ class Task implements Comparable<Task> {
     @Override
     public String toString() {
         // List task, description, and priority level
-       return title + "\t" + description + "\t" + "\t Priority: " + priority;
+        return title + "\t" + description + "\t" + "\t Priority: " + priority;
     }
 }

@@ -31,7 +31,7 @@ public class Prob3 {
    
     public class Truman extends FDR {
         public void democrat() {
-            System.out.println("Truman - D");
+            System.out.println("Truman - D"); 
         }
     }
   
@@ -48,3 +48,19 @@ public class Prob3 {
         }
     } 
 }
+
+/**  
+ * FDR
+ * FDR - D
+ * Democrat Prez
+ * Republican Prez
+ * 
+ * I am the President!
+ * Democrat Prez
+ * Republican Prez
+ * Lincoln-R
+ * 
+ * FDR
+ * Truman - D
+ * Republica Prez
+*/
