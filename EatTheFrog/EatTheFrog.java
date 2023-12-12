@@ -104,86 +104,92 @@ public class EatTheFrog<T extends Task> extends JFrame {
     }
 
     private void addTask() {
-        try {
-            String title = titleField.getText();
-            String description = descriptionField.getText();
-            String selectedPriorityStr = (String) priorityComboBox.getSelectedItem();
-            int priority = Integer.parseInt(selectedPriorityStr.split(" ")[0]);
+    try {
+        String title = titleField.getText();
+        String description = descriptionField.getText();
+        String selectedPriorityStr = (String) priorityComboBox.getSelectedItem();
+        int priority = Integer.parseInt(selectedPriorityStr.split(" ")[0]);
 
+        // Check if a task with the same priority already exists
+        boolean duplicatePriorityExists = taskSet.stream()
+                .anyMatch(task -> task.getPriority() == priority);
+
+        if (!duplicatePriorityExists) {
             T newTask = createTask(title, description, priority);
 
-            if (!taskSet.contains(newTask)) {
-                taskMap.put(newTask.hashCode(), newTask);
-                taskSet.add(newTask);
-                taskListModel.addElement(newTask);
+            taskMap.put(newTask.hashCode(), newTask);
+            taskSet.add(newTask);
+            taskListModel.addElement(newTask);
+
+            // Sort the taskListModel based on task priority
+            sortTaskListModel();
+
+            clearFields();
+
+            // Save tasks to file after adding a task
+            saveTasksToFile();
+        } else {
+            JOptionPane.showMessageDialog(this, "Priority level already exists.");
+        }
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(this, "Invalid input. Please check the values.");
+    }
+}
+
+
+    private void editTask() {
+    int selectedIndex = taskList.getSelectedIndex();
+    if (selectedIndex >= 0) {
+        if (editingTask == null) { // Enter edit mode
+            editingTask = taskList.getSelectedValue();
+            editingTaskIndex = selectedIndex;
+
+            // Populate input fields with the selected task's details for editing
+            titleField.setText(editingTask.getTitle());
+            descriptionField.setText(editingTask.getDescription());
+            // Find the index of the priority level in the combo box
+            int priorityIndex = editingTask.getPriority() - 1; // Adjust index for 1-based priorities
+            priorityComboBox.setSelectedIndex(priorityIndex);
+            completedCheckBox.setSelected(editingTask.isCompleted());
+
+            // Change the button label to "Save Task"
+            editButton.setText("Save Task");
+        } else { // Save changes
+            try {
+                String newTitle = titleField.getText();
+                String newDescription = descriptionField.getText();
+                int newPriority = priorityComboBox.getSelectedIndex() + 1; // Adjust priority value
+
+                // Update the selected task
+                updateTaskDetails(editingTask, newTitle, newDescription, newPriority);
+
+                // Update the task in the map and set
+                taskMap.put(editingTask.hashCode(), editingTask);
+                taskSet.remove(editingTask);
+                taskSet.add(editingTask);
+
+                // Update the list model
+                taskListModel.setElementAt(editingTask, editingTaskIndex);
 
                 // Sort the taskListModel based on task priority
                 sortTaskListModel();
 
                 clearFields();
+                editButton.setText("Edit Task"); // Change the button label back to "Edit Task"
 
-                // Save tasks to file after adding a task
+                editingTask = null; // Reset the editing task
+
+                // Save tasks to file after editing a task
                 saveTasksToFile();
-            } else {
-                JOptionPane.showMessageDialog(this, "Task already exists.");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid input. Please check the values.");
             }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Invalid input. Please check the values.");
         }
+    } else {
+        JOptionPane.showMessageDialog(this, "Select a task to edit.");
     }
+}
 
-    private void editTask() {
-        int selectedIndex = taskList.getSelectedIndex();
-        if (selectedIndex >= 0) {
-            if (editingTask == null) { // Enter edit mode
-                editingTask = taskList.getSelectedValue();
-                editingTaskIndex = selectedIndex;
-
-                // Populate input fields with the selected task's details for editing
-                Task typedTask = (Task) editingTask;
-                titleField.setText(typedTask.getTitle());
-                descriptionField.setText(typedTask.getDescription());
-                priorityComboBox.setSelectedItem(typedTask.getPriority() + " (Priority)");
-                completedCheckBox.setSelected(typedTask.isCompleted());
-
-                // Change the button label to "Save Task"
-                editButton.setText("Save Task");
-            } else { // Save changes
-                try {
-                    String newTitle = titleField.getText();
-                    String newDescription = descriptionField.getText();
-                    String selectedPriorityStr = (String) priorityComboBox.getSelectedItem();
-                    int newPriority = Integer.parseInt(selectedPriorityStr.split(" ")[0]);
-
-                    // Update the selected task
-                    updateTaskDetails(editingTask, newTitle, newDescription, newPriority);
-
-                    // Update the task in the map and set
-                    taskMap.put(editingTask.hashCode(), editingTask);
-                    taskSet.remove(editingTask);
-                    taskSet.add(editingTask);
-
-                    // Update the list model
-                    taskListModel.setElementAt(editingTask, editingTaskIndex);
-
-                    // Sort the taskListModel based on task priority
-                    sortTaskListModel();
-
-                    clearFields();
-                    editButton.setText("Edit Task"); // Change the button label back to "Edit Task"
-
-                    editingTask = null; // Reset the editing task
-
-                    // Save tasks to file after editing a task
-                    saveTasksToFile();
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "Invalid input. Please check the values.");
-                }
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Select a task to edit.");
-        }
-    }
 
     private void deleteTask() {
         int selectedIndex = taskList.getSelectedIndex();
@@ -412,6 +418,6 @@ class Task implements Comparable<Task> {
     @Override
     public String toString() {
         // List task, description, and priority level
-        return title + "\t" + description + "\t" + "\t Priority: " + priority;
+        return title + "\t" + description;
     }
 }

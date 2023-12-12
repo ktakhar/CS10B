@@ -1,2 +1,0 @@
-Study	10b	2	false
-Lunch		3	false
