@@ -140,9 +140,6 @@ public class EatTheFrog extends JFrame {
         // Load tasks from file on application startup
         loadTasksFromFile();
     }
-}
-
-public class TaskManager {
 
     // Method to add a new task
     private void addTask() {
@@ -297,36 +294,6 @@ public class TaskManager {
         }
     }
 
-        // Method to sort the task list model based on task priority
-    private void sortTaskListModel() {
-        ArrayList<Task> taskList = new ArrayList<>(taskSet);
-        taskListModel.clear();
-
-        for (Task task : taskList) {
-            taskListModel.addElement(task);
-        }
-    }
-
-    // Method to clear input fields
-    private void clearFields() {
-        titleField.setText("");
-        descriptionField.setText("");
-        priorityComboBox.setSelectedIndex(0);
-        completedCheckBox.setSelected(false);
-    }
-
-    // Main method to start the application
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new EatTheFrog().setVisible(true);
-            }
-        });
-    }
-}
-
-public class FileManager {
     // Method to load tasks from the file and populate the display fields
     private void loadTasksFromFile() {
         File file = new File(fileName);
@@ -377,6 +344,34 @@ public class FileManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // Method to sort the task list model based on task priority
+    private void sortTaskListModel() {
+        ArrayList<Task> taskList = new ArrayList<>(taskSet);
+        taskListModel.clear();
+
+        for (Task task : taskList) {
+            taskListModel.addElement(task);
+        }
+    }
+
+    // Method to clear input fields
+    private void clearFields() {
+        titleField.setText("");
+        descriptionField.setText("");
+        priorityComboBox.setSelectedIndex(0);
+        completedCheckBox.setSelected(false);
+    }
+
+    // Main method to start the application
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new EatTheFrog().setVisible(true);
+            }
+        });
     }
 }
 

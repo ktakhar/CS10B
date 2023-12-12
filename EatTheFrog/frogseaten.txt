@@ -1,3 +1,0 @@
-Task: Kiss Mooshy!, Priority: 1, Completed: true
-Task: Term Project, Priority: 3, Completed: true
-Task: PSET6, Priority: 4, Completed: true

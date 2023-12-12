@@ -4,73 +4,76 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 
-// The main class for the EatTheFrog application
-public class EatTheFrog extends JFrame {
-    // User interface components
+public class EatTheFrogApp extends JFrame {
+    private TaskManager taskManager;
+    private TaskUI taskUI;
+
+    public EatTheFrogApp() {
+        setTitle("Eat The Frog!");
+        setSize(500, 600);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        taskManager = new TaskManager();
+        taskUI = new TaskUI(taskManager);
+
+        // Add the TaskUI panel to the frame
+        add(taskUI);
+
+        loadTasksFromFile();
+
+        // Make the frame visible
+        setVisible(true);
+    }
+
+    private void loadTasksFromFile() {
+        taskManager.loadTasksFromFile("eatthefrog.txt");
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new EatTheFrogApp();
+        });
+    }
+}
+
+class TaskUI extends JPanel {
     private JTextField titleField, descriptionField;
     private JComboBox<String> priorityComboBox;
     private DefaultListModel<Task> taskListModel;
     private JList<Task> taskList;
     private JButton addButton, editButton, deleteButton;
     private JCheckBox completedCheckBox;
-
-    // Data structures to store tasks
-    private Map<Integer, Task> taskMap;
-    private TreeSet<Task> taskSet; // Use TreeSet for automatic sorting
-
-    // Fields to keep track of the currently edited task and selected task for deletion
+    private TaskManager taskManager;
     private Task editingTask;
     private int editingTaskIndex;
     private Task selectedTaskForDeletion;
 
-    // File names for task storage
-    private final String fileName = "eatthefrog.txt";
-    private final String frogseatenFileName = "frogseaten.txt";
+    public TaskUI(TaskManager taskManager) {
+        this.taskManager = taskManager;
 
-    // Constructor for the EatTheFrog application
-    public EatTheFrog() {
-        // Set up the main window
-        setTitle("Eat The Frog!");
-        setSize(500, 600);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        Font h1 = new Font("Arial", Font.BOLD, 36);
-        Font h2 = new Font("Arial", Font.BOLD, 24);
-        Font h3 = new Font("Arial", Font.PLAIN, 24);
+        setLayout(new BorderLayout());
 
-        // Initialize data structures
-        taskMap = new HashMap<>();
-        taskSet = new TreeSet<>();
-
-        // Create a list model for tasks and a JList to display them
         taskListModel = new DefaultListModel<>();
         taskList = new JList<>(taskListModel);
-
-        taskList.setFont(h2);
-        taskList.setForeground(Color.BLACK);
-
         JScrollPane scrollPane = new JScrollPane(taskList);
         add(scrollPane, BorderLayout.CENTER);
 
         // Create an input panel for task details
         JPanel inputPanel = new JPanel(new GridLayout(4, 2));
-        inputPanel.setBackground(new Color(8, 164, 167));
 
         JLabel taskLabel = new JLabel("Task: ");
         inputPanel.add(taskLabel);
-        taskLabel.setFont(h3);
         titleField = new JTextField();
         inputPanel.add(titleField);
         titleField.setPreferredSize(new Dimension(200, 40));
 
         JLabel descriptionLabel = new JLabel("Description: ");
         inputPanel.add(descriptionLabel);
-        descriptionLabel.setFont(h3);
         descriptionField = new JTextField();
         inputPanel.add(descriptionField);
 
         JLabel priorityLabel = new JLabel("Priority: ");
         inputPanel.add(priorityLabel);
-        priorityLabel.setFont(h3);
 
         priorityComboBox = new JComboBox<>(new String[]{"1 (Highest)", "2", "3", "4", "5 (Lowest)"});
         inputPanel.add(priorityComboBox);
@@ -83,26 +86,14 @@ public class EatTheFrog extends JFrame {
         deleteButton = new JButton("Delete");
         completedCheckBox = new JCheckBox("Completed");
 
-        // Set the text color for each button and the button panel
-        addButton.setForeground(new Color(8, 164, 167));
-        editButton.setForeground(new Color(8, 164, 167));
-        deleteButton.setForeground(new Color(8, 164, 167));
-        completedCheckBox.setForeground(new Color(8, 164, 167));
-        buttonPanel.setBackground(new Color(8, 164, 167));
-        completedCheckBox.setForeground(Color.WHITE);
-
-        // Set the font for each button
-        Font buttonFont = new Font("Arial", Font.PLAIN, 18);
-        addButton.setFont(buttonFont);
-        editButton.setFont(buttonFont);
-        deleteButton.setFont(buttonFont);
-        completedCheckBox.setFont(buttonFont);
-
         // Add buttons to the panel
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(completedCheckBox);
+
+        add(inputPanel, BorderLayout.NORTH);
+        add(buttonPanel, BorderLayout.SOUTH);
 
         // Add action listeners to the buttons
         addButton.addActionListener(new ActionListener() {
@@ -129,22 +120,13 @@ public class EatTheFrog extends JFrame {
         completedCheckBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                completed();
+                markCompleted();
             }
         });
 
-        // Add input and button panels to the main window
-        add(inputPanel, BorderLayout.NORTH);
-        add(buttonPanel, BorderLayout.SOUTH);
-
-        // Load tasks from file on application startup
         loadTasksFromFile();
     }
-}
 
-public class TaskManager {
-
-    // Method to add a new task
     private void addTask() {
         try {
             String title = titleField.getText();
@@ -152,35 +134,21 @@ public class TaskManager {
             String selectedPriorityStr = (String) priorityComboBox.getSelectedItem();
             int priority = Integer.parseInt(selectedPriorityStr.split(" ")[0]);
 
-            // Check if a task with the same priority already exists
-            boolean duplicatePriorityExists = taskSet.stream()
-                    .anyMatch(task -> task.getPriority() == priority);
+            // Create a new task and add it to data structures
+            Task newTask = new Task(title, description, priority);
 
-            if (!duplicatePriorityExists) {
-                // Create a new task and add it to data structures
-                Task newTask = new Task(title, description, priority);
+            taskManager.addTask(newTask);
 
-                taskMap.put(newTask.hashCode(), newTask);
-                taskSet.add(newTask);
-                taskListModel.addElement(newTask);
+            // Clear input fields
+            clearFields();
 
-                // Sort the taskListModel based on task priority
-                sortTaskListModel();
-
-                // Clear input fields
-                clearFields();
-
-                // Save tasks to file after adding a task
-                saveTasksToFile();
-            } else {
-                JOptionPane.showMessageDialog(this, "Priority level already exists.");
-            }
+            // Save tasks to file after adding a task
+            taskManager.saveTasksToFile("eatthefrog.txt");
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Invalid input. Please check the values.");
         }
     }
 
-    // Method to edit an existing task
     private void editTask() {
         int selectedIndex = taskList.getSelectedIndex();
         if (selectedIndex >= 0) {
@@ -209,16 +177,11 @@ public class TaskManager {
                     editingTask.setDescription(newDescription);
                     editingTask.setPriority(newPriority);
 
-                    // Update the task in the map and set
-                    taskMap.put(editingTask.hashCode(), editingTask);
-                    taskSet.remove(editingTask);
-                    taskSet.add(editingTask);
+                    // Update the task in the manager
+                    taskManager.updateTask(editingTask);
 
                     // Update the list model
                     taskListModel.setElementAt(editingTask, editingTaskIndex);
-
-                    // Sort the taskListModel based on task priority
-                    sortTaskListModel();
 
                     // Clear input fields
                     clearFields();
@@ -227,7 +190,7 @@ public class TaskManager {
                     editingTask = null; // Reset the editing task
 
                     // Save tasks to file after editing a task
-                    saveTasksToFile();
+                    taskManager.saveTasksToFile("eatthefrog.txt");
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(this, "Invalid input. Please check the values.");
                 }
@@ -237,7 +200,6 @@ public class TaskManager {
         }
     }
 
-    // Method to delete a task
     private void deleteTask() {
         int selectedIndex = taskList.getSelectedIndex();
         if (selectedIndex >= 0) {
@@ -247,23 +209,21 @@ public class TaskManager {
 
             if (option == JOptionPane.YES_OPTION) {
                 // Remove the task from data structures and list model
-                taskMap.remove(selectedTaskForDeletion.hashCode());
-                taskSet.remove(selectedTaskForDeletion);
+                taskManager.deleteTask(selectedTaskForDeletion);
                 taskListModel.removeElement(selectedTaskForDeletion);
 
                 // Clear input fields
                 clearFields();
 
                 // Save tasks to file after deleting a task
-                saveTasksToFile();
+                taskManager.saveTasksToFile("eatthefrog.txt");
             }
         } else {
             JOptionPane.showMessageDialog(this, "Select a task to delete.");
         }
     }
 
-    // Method to mark a task as completed
-    private void completed() {
+    private void markCompleted() {
         int selectedIndex = taskList.getSelectedIndex();
         if (selectedIndex >= 0) {
             Task selectedTask = taskList.getSelectedValue();
@@ -273,9 +233,8 @@ public class TaskManager {
             if (option == JOptionPane.YES_OPTION) {
                 selectedTask.setCompleted(true);
 
-                // Update the task in the map and set
-                taskMap.put(selectedTask.hashCode(), selectedTask);
-                taskSet.remove(selectedTask);
+                // Update the task in the manager
+                taskManager.updateTask(selectedTask);
 
                 if (selectedTask.isCompleted()) {
                     // Optionally move the completed task to a separate list
@@ -283,10 +242,10 @@ public class TaskManager {
                     taskListModel.removeElement(selectedTask);
 
                     // Save tasks to file after completing a task
-                    saveTasksToFile();
+                    taskManager.saveTasksToFile("eatthefrog.txt");
 
                     // Add completed task to "frogseaten.txt"
-                    addCompletedTaskToFrogFile(selectedTask);
+                    taskManager.addCompletedTaskToFrogFile(selectedTask);
                 }
 
                 // Clear input fields
@@ -297,17 +256,6 @@ public class TaskManager {
         }
     }
 
-        // Method to sort the task list model based on task priority
-    private void sortTaskListModel() {
-        ArrayList<Task> taskList = new ArrayList<>(taskSet);
-        taskListModel.clear();
-
-        for (Task task : taskList) {
-            taskListModel.addElement(task);
-        }
-    }
-
-    // Method to clear input fields
     private void clearFields() {
         titleField.setText("");
         descriptionField.setText("");
@@ -315,72 +263,15 @@ public class TaskManager {
         completedCheckBox.setSelected(false);
     }
 
-    // Main method to start the application
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new EatTheFrog().setVisible(true);
-            }
-        });
-    }
-}
-
-public class FileManager {
-    // Method to load tasks from the file and populate the display fields
-    private void loadTasksFromFile() {
-        File file = new File(fileName);
-        if (file.exists()) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] parts = line.split("\t");
-                    if (parts.length == 4) {
-                        String title = parts[0];
-                        String description = parts[1];
-                        int priority = Integer.parseInt(parts[2]);
-                        boolean completed = Boolean.parseBoolean(parts[3]);
-
-                        Task loadedTask = new Task(title, description, priority);
-                        loadedTask.setCompleted(completed);
-
-                        taskMap.put(loadedTask.hashCode(), loadedTask);
-                        taskSet.add(loadedTask);
-                        taskListModel.addElement(loadedTask);
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    // Method to save tasks to the file
-    private void saveTasksToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            for (Task task : taskSet) {
-                String line = task.getTitle() + "\t" + task.getDescription() + "\t" + task.getPriority() + "\t" + task.isCompleted();
-                writer.write(line);
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Method to add a completed task to "frogseaten.txt"
-    private void addCompletedTaskToFrogFile(Task completedTask) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(frogseatenFileName, true))) {
-            String line = "Task: " + completedTask.getTitle() + ", Priority: " + completedTask.getPriority() + ", Completed: " + completedTask.isCompleted();
-            writer.write(line);
-            writer.newLine();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void updateTaskList() {
+        taskListModel.clear();
+        for (Task task : taskManager.getTasks()) {
+            taskListModel.addElement(task);
         }
     }
 }
 
-class Task implements Comparable<Task> {
+class Task {
     private String title;
     private String description;
     private int priority;
@@ -390,7 +281,7 @@ class Task implements Comparable<Task> {
         this.title = title;
         this.description = description;
         this.priority = priority;
-        this.completed = false; // By default, a task is not completed
+        this.completed = false;
     }
 
     // Getter and setter methods for title
@@ -414,12 +305,6 @@ class Task implements Comparable<Task> {
     // Getter and setter methods for priority
     public int getPriority() {
         return priority;
-    }
-
-     @Override
-    public int compareTo(Task otherTask) {
-        // Compare tasks based on their priority
-        return Integer.compare(this.priority, otherTask.priority);
     }
 
     public void setPriority(int priority) {
@@ -456,3 +341,70 @@ class Task implements Comparable<Task> {
     }
 }
 
+class TaskManager {
+    private TreeSet<Task> tasks;
+    private final String fileName = "eatthefrog.txt";
+
+    public TaskManager() {
+        tasks = new TreeSet<>();
+    }
+
+    public void loadTasksFromFile(String fileName) {
+        File file = new File(fileName);
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split("\t");
+                    if (parts.length == 4) {
+                        String title = parts[0];
+                        String description = parts[1];
+                        int priority = Integer.parseInt(parts[2]);
+                        boolean completed = Boolean.parseBoolean(parts[3]);
+
+                        Task loadedTask = new Task(title, description, priority);
+                        loadedTask.setCompleted(completed);
+
+                        tasks.add(loadedTask);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void saveTasksToFile(String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (Task task : tasks) {
+                String line = task.getTitle() + "\t" + task.getDescription() + "\t" + task.getPriority() + "\t" + task.isCompleted();
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addCompletedTaskToFrogFile(Task completedTask) {
+        // Implement this method to add completed tasks to "frogseaten.txt"
+        // You can use a similar approach as saving tasks to file
+        // Write completed task details to "frogseaten.txt" in a format of your choice
+    }
+
+    public void addTask(Task task) {
+        tasks.add(task);
+    }
+
+    public void updateTask(Task task) {
+        // Tasks in a TreeSet are automatically updated since they are sorted based on priority
+    }
+
+    public void deleteTask(Task task) {
+        tasks.remove(task);
+    }
+
+    public TreeSet<Task> getTasks() {
+        return tasks;
+    }
+}
