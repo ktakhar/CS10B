@@ -83,11 +83,13 @@ public class EatTheFrog extends JFrame {
         deleteButton = new JButton("Delete");
         completedCheckBox = new JCheckBox("Completed");
 
-        // Set the text color for each button
+        // Set the text color for each button and the button panel
         addButton.setForeground(new Color(8, 164, 167));
         editButton.setForeground(new Color(8, 164, 167));
         deleteButton.setForeground(new Color(8, 164, 167));
         completedCheckBox.setForeground(new Color(8, 164, 167));
+        buttonPanel.setBackground(new Color(8, 164, 167));
+        completedCheckBox.setForeground(Color.WHITE);
 
         // Set the font for each button
         Font buttonFont = new Font("Arial", Font.PLAIN, 18);
