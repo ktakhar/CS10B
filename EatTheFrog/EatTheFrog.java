@@ -5,38 +5,44 @@ import java.io.*;
 import java.util.*;
 import java.text.*;
 
-public class EatTheFrog<T extends Task> extends JFrame {
+// The main class for the EatTheFrog application
+public class EatTheFrog extends JFrame {
+    // User interface components
     private JTextField titleField, descriptionField;
     private JComboBox<String> priorityComboBox;
-    private DefaultListModel<T> taskListModel;
-    private JList<T> taskList;
-
-    private Map<Integer, T> taskMap;
-    private TreeSet<T> taskSet; // Use TreeSet for automatic sorting
-
+    private DefaultListModel<Task> taskListModel;
+    private JList<Task> taskList;
     private JButton addButton, editButton, deleteButton;
     private JCheckBox completedCheckBox;
 
-    // Fields to keep track of the currently edited task and selected task for deletion
-    private T editingTask;
-    private int editingTaskIndex;
-    private T selectedTaskForDeletion;
+    // Data structures to store tasks
+    private Map<Integer, Task> taskMap;
+    private TreeSet<Task> taskSet; // Use TreeSet for automatic sorting
 
+    // Fields to keep track of the currently edited task and selected task for deletion
+    private Task editingTask;
+    private int editingTaskIndex;
+    private Task selectedTaskForDeletion;
+
+    // File names for task storage
     private final String fileName = "eatthefrog.txt";
     private final String frogseatenFileName = "frogseaten.txt";
 
-
+    // Constructor for the EatTheFrog application
     public EatTheFrog() {
+        // Set up the main window
         setTitle("Eat The Frog!");
         setSize(400, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        getContentPane().setBackground(Color.BLACK);
-        Font h1 = new Font("Arial", Font.PLAIN, 24);
-        Font h2 = new Font("Arial", Font.PLAIN, 18);
+        Font h1 = new Font("Arial", Font.BOLD, 36);
+        Font h2 = new Font("Arial", Font.BOLD, 24);
+        Font h3 = new Font("Arial", Font.Plain, 24);
 
+        // Initialize data structures
         taskMap = new HashMap<>();
         taskSet = new TreeSet<>();
 
+        // Create a list model for tasks and a JList to display them
         taskListModel = new DefaultListModel<>();
         taskList = new JList<>(taskListModel);
 
@@ -46,6 +52,7 @@ public class EatTheFrog<T extends Task> extends JFrame {
         JScrollPane scrollPane = new JScrollPane(taskList);
         add(scrollPane, BorderLayout.CENTER);
 
+        // Create an input panel for task details
         JPanel inputPanel = new JPanel(new GridLayout(4, 2));
 
         inputPanel.add(new JLabel("Task:"));
@@ -58,6 +65,7 @@ public class EatTheFrog<T extends Task> extends JFrame {
         priorityComboBox = new JComboBox<>(new String[]{"1 (Highest)", "2", "3", "4", "5 (Lowest)"});
         inputPanel.add(priorityComboBox);
 
+        // Create buttons for adding, editing, deleting, and marking tasks as completed
         addButton = new JButton("Add Task");
         addButton.addActionListener(new ActionListener() {
             @Override
@@ -90,12 +98,14 @@ public class EatTheFrog<T extends Task> extends JFrame {
             }
         });
 
+        // Create a button panel to hold the buttons
         JPanel buttonPanel = new JPanel(new GridLayout(1, 4)); // Adjusted button panel
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton); // Added delete button
         buttonPanel.add(completedCheckBox);
 
+        // Add input and button panels to the main window
         add(inputPanel, BorderLayout.NORTH);
         add(buttonPanel, BorderLayout.SOUTH);
 
@@ -103,94 +113,100 @@ public class EatTheFrog<T extends Task> extends JFrame {
         loadTasksFromFile();
     }
 
+    // Method to add a new task
     private void addTask() {
-    try {
-        String title = titleField.getText();
-        String description = descriptionField.getText();
-        String selectedPriorityStr = (String) priorityComboBox.getSelectedItem();
-        int priority = Integer.parseInt(selectedPriorityStr.split(" ")[0]);
+        try {
+            String title = titleField.getText();
+            String description = descriptionField.getText();
+            String selectedPriorityStr = (String) priorityComboBox.getSelectedItem();
+            int priority = Integer.parseInt(selectedPriorityStr.split(" ")[0]);
 
-        // Check if a task with the same priority already exists
-        boolean duplicatePriorityExists = taskSet.stream()
-                .anyMatch(task -> task.getPriority() == priority);
+            // Check if a task with the same priority already exists
+            boolean duplicatePriorityExists = taskSet.stream()
+                    .anyMatch(task -> task.getPriority() == priority);
 
-        if (!duplicatePriorityExists) {
-            T newTask = createTask(title, description, priority);
+            if (!duplicatePriorityExists) {
+                // Create a new task and add it to data structures
+                Task newTask = new Task(title, description, priority);
 
-            taskMap.put(newTask.hashCode(), newTask);
-            taskSet.add(newTask);
-            taskListModel.addElement(newTask);
-
-            // Sort the taskListModel based on task priority
-            sortTaskListModel();
-
-            clearFields();
-
-            // Save tasks to file after adding a task
-            saveTasksToFile();
-        } else {
-            JOptionPane.showMessageDialog(this, "Priority level already exists.");
-        }
-    } catch (NumberFormatException ex) {
-        JOptionPane.showMessageDialog(this, "Invalid input. Please check the values.");
-    }
-}
-
-
-    private void editTask() {
-    int selectedIndex = taskList.getSelectedIndex();
-    if (selectedIndex >= 0) {
-        if (editingTask == null) { // Enter edit mode
-            editingTask = taskList.getSelectedValue();
-            editingTaskIndex = selectedIndex;
-
-            // Populate input fields with the selected task's details for editing
-            titleField.setText(editingTask.getTitle());
-            descriptionField.setText(editingTask.getDescription());
-            // Find the index of the priority level in the combo box
-            int priorityIndex = editingTask.getPriority() - 1; // Adjust index for 1-based priorities
-            priorityComboBox.setSelectedIndex(priorityIndex);
-            completedCheckBox.setSelected(editingTask.isCompleted());
-
-            // Change the button label to "Save Task"
-            editButton.setText("Save Task");
-        } else { // Save changes
-            try {
-                String newTitle = titleField.getText();
-                String newDescription = descriptionField.getText();
-                int newPriority = priorityComboBox.getSelectedIndex() + 1; // Adjust priority value
-
-                // Update the selected task
-                updateTaskDetails(editingTask, newTitle, newDescription, newPriority);
-
-                // Update the task in the map and set
-                taskMap.put(editingTask.hashCode(), editingTask);
-                taskSet.remove(editingTask);
-                taskSet.add(editingTask);
-
-                // Update the list model
-                taskListModel.setElementAt(editingTask, editingTaskIndex);
+                taskMap.put(newTask.hashCode(), newTask);
+                taskSet.add(newTask);
+                taskListModel.addElement(newTask);
 
                 // Sort the taskListModel based on task priority
                 sortTaskListModel();
 
+                // Clear input fields
                 clearFields();
-                editButton.setText("Edit Task"); // Change the button label back to "Edit Task"
 
-                editingTask = null; // Reset the editing task
-
-                // Save tasks to file after editing a task
+                // Save tasks to file after adding a task
                 saveTasksToFile();
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Invalid input. Please check the values.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Priority level already exists.");
             }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Invalid input. Please check the values.");
         }
-    } else {
-        JOptionPane.showMessageDialog(this, "Select a task to edit.");
     }
-}
 
+    // Method to edit an existing task
+    private void editTask() {
+        int selectedIndex = taskList.getSelectedIndex();
+        if (selectedIndex >= 0) {
+            if (editingTask == null) { // Enter edit mode
+                editingTask = taskList.getSelectedValue();
+                editingTaskIndex = selectedIndex;
 
+                // Populate input fields with the selected task's details for editing
+                titleField.setText(editingTask.getTitle());
+                descriptionField.setText(editingTask.getDescription());
+                // Find the index of the priority level in the combo box
+                int priorityIndex = editingTask.getPriority() - 1; // Adjust index for 1-based priorities
+                priorityComboBox.setSelectedIndex(priorityIndex);
+                completedCheckBox.setSelected(editingTask.isCompleted());
+
+                // Change the button label to "Save Task"
+                editButton.setText("Save Task");
+            } else { // Save changes
+                try {
+                    String newTitle = titleField.getText();
+                    String newDescription = descriptionField.getText();
+                    int newPriority = priorityComboBox.getSelectedIndex() + 1; // Adjust priority value
+
+                    // Update the selected task
+                    editingTask.setTitle(newTitle);
+                    editingTask.setDescription(newDescription);
+                    editingTask.setPriority(newPriority);
+
+                    // Update the task in the map and set
+                    taskMap.put(editingTask.hashCode(), editingTask);
+                    taskSet.remove(editingTask);
+                    taskSet.add(editingTask);
+
+                    // Update the list model
+                    taskListModel.setElementAt(editingTask, editingTaskIndex);
+
+                    // Sort the taskListModel based on task priority
+                    sortTaskListModel();
+
+                    // Clear input fields
+                    clearFields();
+                    editButton.setText("Edit Task"); // Change the button label back to "Edit Task"
+
+                    editingTask = null; // Reset the editing task
+
+                    // Save tasks to file after editing a task
+                    saveTasksToFile();
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Invalid input. Please check the values.");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Select a task to edit.");
+        }
+    }
+
+    // Method to delete a task
     private void deleteTask() {
         int selectedIndex = taskList.getSelectedIndex();
         if (selectedIndex >= 0) {
@@ -199,9 +215,12 @@ public class EatTheFrog<T extends Task> extends JFrame {
             int option = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this task?", "Confirmation", JOptionPane.YES_NO_OPTION);
 
             if (option == JOptionPane.YES_OPTION) {
+                // Remove the task from data structures and list model
                 taskMap.remove(selectedTaskForDeletion.hashCode());
                 taskSet.remove(selectedTaskForDeletion);
                 taskListModel.removeElement(selectedTaskForDeletion);
+
+                // Clear input fields
                 clearFields();
 
                 // Save tasks to file after deleting a task
@@ -212,29 +231,31 @@ public class EatTheFrog<T extends Task> extends JFrame {
         }
     }
 
-        private void completed() {
+    // Method to mark a task as completed
+    private void completed() {
         int selectedIndex = taskList.getSelectedIndex();
         if (selectedIndex >= 0) {
-            T selectedTask = taskList.getSelectedValue();
+            Task selectedTask = taskList.getSelectedValue();
 
             int option = JOptionPane.showConfirmDialog(this, "Have you completed this task?", "Confirmation", JOptionPane.YES_NO_OPTION);
 
             if (option == JOptionPane.YES_OPTION) {
-                setTaskCompleted(selectedTask, true);
+                selectedTask.setCompleted(true);
 
                 // Update the task in the map and set
                 taskMap.put(selectedTask.hashCode(), selectedTask);
                 taskSet.remove(selectedTask);
 
-                if (isTaskCompleted(selectedTask)) {
+                if (selectedTask.isCompleted()) {
                     // Optionally move the completed task to a separate list
                     // For now, we'll simply remove it from the list
                     taskListModel.removeElement(selectedTask);
 
                     // Add the completed task to frogseaten.txt
-                    addToFrogEatenFile((Task) selectedTask);
+                    addToFrogEatenFile(selectedTask);
                 }
 
+                // Clear input fields
                 clearFields();
 
                 // Save tasks to file after completing a task
@@ -245,6 +266,7 @@ public class EatTheFrog<T extends Task> extends JFrame {
         }
     }
 
+    // Method to add a completed task to frogseaten.txt
     private void addToFrogEatenFile(Task completedTask) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(frogseatenFileName, true))) {
             writer.write(completedTask.getTitle() + "\t" + completedTask.getDescription() + "\t" + completedTask.getPriority());
@@ -254,8 +276,7 @@ public class EatTheFrog<T extends Task> extends JFrame {
         }
     }
 
-    
-
+    // Method to clear input fields
     private void clearFields() {
         titleField.setText("");
         descriptionField.setText("");
@@ -263,30 +284,9 @@ public class EatTheFrog<T extends Task> extends JFrame {
         completedCheckBox.setSelected(false);
     }
 
-    protected T createTask(String title, String description, int priority) {
-        return (T) new Task(title, description, priority);
-    }
-
-    protected void updateTaskDetails(T task, String title, String description, int priority) {
-        Task typedTask = (Task) task;
-        typedTask.setTitle(title);
-        typedTask.setDescription(description);
-        typedTask.setPriority(priority);
-    }
-
-    protected void setTaskCompleted(T task, boolean completed) {
-        Task typedTask = (Task) task;
-        typedTask.setCompleted(completed);
-    }
-
-    protected boolean isTaskCompleted(T task) {
-        Task typedTask = (Task) task;
-        return typedTask.isCompleted();
-    }
-
-    // Sort the taskListModel based on task priority
+    // Method to sort the taskListModel based on task priority
     private void sortTaskListModel() {
-        ArrayList<T> tasks = new ArrayList<>();
+        ArrayList<Task> tasks = new ArrayList<>();
         for (int i = 0; i < taskListModel.getSize(); i++) {
             tasks.add(taskListModel.getElementAt(i));
         }
@@ -294,72 +294,73 @@ public class EatTheFrog<T extends Task> extends JFrame {
         Collections.sort(tasks); // Sort the tasks based on their compareTo method
 
         taskListModel.clear();
-        for (T task : tasks) {
+        for (Task task : tasks) {
             taskListModel.addElement(task);
         }
     }
 
-    // Load tasks from file and populate the display fields
+    // Method to load tasks from file and populate the display fields
     private void loadTasksFromFile() {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-            String[] parts = line.split("\t");
-            if (parts.length == 4) {
-                String title = parts[0];
-                String description = parts[1];
-                int priority = Integer.parseInt(parts[2]);
-                boolean completed = Boolean.parseBoolean(parts[3]);
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\t");
+                if (parts.length == 4) {
+                    String title = parts[0];
+                    String description = parts[1];
+                    int priority = Integer.parseInt(parts[2]);
+                    boolean completed = Boolean.parseBoolean(parts[3]);
 
-                T loadedTask = createTask(title, description, priority);
-                setTaskCompleted(loadedTask, completed);
+                    Task loadedTask = new Task(title, description, priority);
+                    loadedTask.setCompleted(completed);
 
-                taskMap.put(loadedTask.hashCode(), loadedTask);
-                taskSet.add(loadedTask);
-                taskListModel.addElement(loadedTask);
+                    taskMap.put(loadedTask.hashCode(), loadedTask);
+                    taskSet.add(loadedTask);
+                    taskListModel.addElement(loadedTask);
 
-                // Populate the input fields with the loaded task's details
-                if (taskList.getSelectedValue() == loadedTask) {
-                    titleField.setText(title);
-                    descriptionField.setText(description);
-                    priorityComboBox.setSelectedItem(priority + " (Priority)");
-                    completedCheckBox.setSelected(completed);
+                    // Populate the input fields with the loaded task's details
+                    if (taskList.getSelectedValue() == loadedTask) {
+                        titleField.setText(title);
+                        descriptionField.setText(description);
+                        priorityComboBox.setSelectedItem(priority + " (Priority)");
+                        completedCheckBox.setSelected(completed);
+                    }
                 }
             }
+        } catch (FileNotFoundException e) {
+            // Handle the case where the file does not exist (it will be created when tasks are saved)
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    } catch (FileNotFoundException e) {
-        // Handle the case where the file does not exist (it will be created when tasks are saved)
-    } catch (IOException e) {
-        e.printStackTrace();
     }
-}
 
-
-   // Save tasks to file
-private void saveTasksToFile() {
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-        for (int i = 0; i < taskListModel.getSize(); i++) {
-            T task = taskListModel.getElementAt(i);
-            writer.write(task.getTitle() + "\t" + task.getDescription() + "\t" + task.getPriority() + "\t" + task.isCompleted());
-            writer.newLine();
+    // Method to save tasks to file
+    private void saveTasksToFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (int i = 0; i < taskListModel.getSize(); i++) {
+                Task task = taskListModel.getElementAt(i);
+                writer.write(task.getTitle() + "\t" + task.getDescription() + "\t" + task.getPriority() + "\t" + task.isCompleted());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    } catch (IOException e) {
-        e.printStackTrace();
     }
-}
 
-
+    // Main method to launch the application
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                EatTheFrog<Task> app = new EatTheFrog<>();
+                EatTheFrog app = new EatTheFrog();
                 app.setVisible(true);
             }
         });
     }
 }
 
+// Template class for tasks
 class Task implements Comparable<Task> {
+    // Fields for task properties
     private static int nextId = 1;
     private int id;
     private String title;
@@ -367,6 +368,7 @@ class Task implements Comparable<Task> {
     private int priority;
     private boolean completed;
 
+    // Constructor to create a new task
     public Task(String title, String description, int priority) {
         this.id = nextId++;
         this.title = title;
@@ -418,6 +420,6 @@ class Task implements Comparable<Task> {
     @Override
     public String toString() {
         // List task, description, and priority level
-        return title + "\t" + description;
+        return title + "\t" + description + "\t\t\t\t" + priority;
     }
 }
