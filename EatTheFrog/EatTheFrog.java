@@ -23,6 +23,8 @@ public class EatTheFrog<T extends Task> extends JFrame {
     private T selectedTaskForDeletion;
 
     private final String fileName = "eatthefrog.txt";
+    private final String frogseatenFileName = "frogseaten.txt";
+
 
     public EatTheFrog() {
         setTitle("Eat The Frog!");
@@ -204,7 +206,7 @@ public class EatTheFrog<T extends Task> extends JFrame {
         }
     }
 
-    private void completed() {
+        private void completed() {
         int selectedIndex = taskList.getSelectedIndex();
         if (selectedIndex >= 0) {
             T selectedTask = taskList.getSelectedValue();
@@ -222,6 +224,9 @@ public class EatTheFrog<T extends Task> extends JFrame {
                     // Optionally move the completed task to a separate list
                     // For now, we'll simply remove it from the list
                     taskListModel.removeElement(selectedTask);
+
+                    // Add the completed task to frogseaten.txt
+                    addToFrogEatenFile((Task) selectedTask);
                 }
 
                 clearFields();
@@ -233,6 +238,17 @@ public class EatTheFrog<T extends Task> extends JFrame {
             JOptionPane.showMessageDialog(this, "Select a task to mark as completed.");
         }
     }
+
+    private void addToFrogEatenFile(Task completedTask) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(frogseatenFileName, true))) {
+            writer.write(completedTask.getTitle() + "\t" + completedTask.getDescription() + "\t" + completedTask.getPriority());
+            writer.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    
 
     private void clearFields() {
         titleField.setText("");
@@ -277,45 +293,55 @@ public class EatTheFrog<T extends Task> extends JFrame {
         }
     }
 
-    // Load tasks from file
+    // Load tasks from file and populate the display fields
     private void loadTasksFromFile() {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\t");
-                if (parts.length == 4) {
-                    String title = parts[0];
-                    String description = parts[1];
-                    int priority = Integer.parseInt(parts[2]);
-                    boolean completed = Boolean.parseBoolean(parts[3]);
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] parts = line.split("\t");
+            if (parts.length == 4) {
+                String title = parts[0];
+                String description = parts[1];
+                int priority = Integer.parseInt(parts[2]);
+                boolean completed = Boolean.parseBoolean(parts[3]);
 
-                    T loadedTask = createTask(title, description, priority);
-                    setTaskCompleted(loadedTask, completed);
+                T loadedTask = createTask(title, description, priority);
+                setTaskCompleted(loadedTask, completed);
 
-                    taskMap.put(loadedTask.hashCode(), loadedTask);
-                    taskSet.add(loadedTask);
-                    taskListModel.addElement(loadedTask);
+                taskMap.put(loadedTask.hashCode(), loadedTask);
+                taskSet.add(loadedTask);
+                taskListModel.addElement(loadedTask);
+
+                // Populate the input fields with the loaded task's details
+                if (taskList.getSelectedValue() == loadedTask) {
+                    titleField.setText(title);
+                    descriptionField.setText(description);
+                    priorityComboBox.setSelectedItem(priority + " (Priority)");
+                    completedCheckBox.setSelected(completed);
                 }
             }
-        } catch (FileNotFoundException e) {
-            // Handle the case where the file does not exist (it will be created when tasks are saved)
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+    } catch (FileNotFoundException e) {
+        // Handle the case where the file does not exist (it will be created when tasks are saved)
+    } catch (IOException e) {
+        e.printStackTrace();
     }
+}
 
-    // Save tasks to file
-    private void saveTasksToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            for (int i = 0; i < taskListModel.getSize(); i++) {
-                T task = taskListModel.getElementAt(i);
-                writer.write(task.getTitle() + "\t" + task.getDescription() + "\t" + task.getPriority() + "\t" + task.isCompleted());
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+   // Save tasks to file
+private void saveTasksToFile() {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+        for (int i = 0; i < taskListModel.getSize(); i++) {
+            T task = taskListModel.getElementAt(i);
+            writer.write(task.getTitle() + "\t" + task.getDescription() + "\t" + task.getPriority() + "\t" + task.isCompleted());
+            writer.newLine();
         }
+    } catch (IOException e) {
+        e.printStackTrace();
     }
+}
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
