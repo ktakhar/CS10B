@@ -1,0 +1,89 @@
+Script started on Wed Jan 26 15:41:52 2000
+is03:~/unit5/interpreter-compiler % login gerovichpico .broadcastlogin gerovich[K[Kjava InterpreterCompiler.[K
+ASSIGNMENT STMT INTERPRETER/COMPILER
+Available semantics:
+        1 - interpreter
+        2 - MIPS compiler
+        3 - post-fix compiler
+        4 - LISP compiler
+        5 - English compiler
+        6 - quit
+        7 - ...show this list again
+
+select semantics (enter 1..5, 6 to quit, or 7 for list): 2
+                  -- MIPS COMPILER --
+enter program:  ';' ends lines, '.' ends pgm
+-> x = 5;
+        li   $t0,  5
+        move $s0, $t0
+y = x + 7;
+        li   $t0,  7
+        add  $t1, $s0, $t0
+        move $s1, $t1
+.
+select semantics (enter 1..5, 6 to quit, or 7 for list): 2
+                  -- MIPS COMPILER --
+enter program:  ';' ends lines, '.' ends pgm
+-> b = 1;
+        li   $t0,  1
+        move $s0, $t0
+c = 2;
+        li   $t0,  2
+        move $s1, $t0
+d = 4*b + 20*c;
+        li   $t0,  4
+        mul  $t1, $t0, $s0
+        li   $t0,  20
+        mul  $t2, $t0, $s1
+        add  $t0, $t1, $t2
+        move $s2, $t0
+.
+select semantics (enter 1..5, 6 to quit, or 7 for list): 2
+                  -- MIPS COMPILER --
+enter program:  ';' ends lines, '.' ends pgm
+-> x = 4 / 3 _ + 5 * 7 / 4;
+        li   $t0,  4
+        li   $t1,  3
+        div  $t2, $t0, $t1
+        li   $t0,  5
+        li   $t1,  7
+        mul  $t3, $t0, $t1
+        li   $t0,  4
+        div  $t1, $t3, $t0
+        add  $t0, $t2, $t1
+        move $s0, $t0
+.
+select semantics (enter 1..5, 6 to quit, or 7 for list): 2
+                  -- MIPS COMPILER --
+enter program:  ';' ends lines, '.' ends pgm
+-> a = b   1*2*3*4      #(  *(2*(3*(4*(5*(6*(7))))));
+        li   $t0,  1
+        li   $t1,  2
+        li   $t2,  3
+        li   $t3,  4
+        li   $t4,  5
+        li   $t5,  6
+        li   $t6,  7
+        mul  $t7, $t5, $t6
+        mul  $t5, $t4, $t7
+        mul  $t4, $t3, $t5
+        mul  $t3, $t2, $t4
+        mul  $t2, $t1, $t3
+        mul  $t1, $t0, $t2
+        move $s0, $t1
+.
+select semantics (enter 1..5, 6 to quit, or 7 for list): 2
+                  -- MIPS COMPILER --
+enter program:  ';' ends lines, '.' ends pgm
+-> a = 1*(2*(3*(4*(5*(6*(7))))));       *(8)))))));
+        li   $t0,  1
+        li   $t1,  2
+        li   $t2,  3
+        li   $t3,  4
+        li   $t4,  5
+        li   $t5,  6
+        li   $t6,  7
+        li   $t7,  8
+fatal error: ran out of temporary registersis03:~/unit5/interpreter-compiler % ^Dexit
+
+script done on Wed Jan 26 15:46:42 2000

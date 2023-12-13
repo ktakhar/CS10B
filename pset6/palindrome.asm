@@ -1,3 +1,10 @@
+# palindrome.asm
+
+# PSET 6 #2
+# Reads string from user
+# Checks if string is a palindrome
+# Prints corresponding statement. 
+
 .data
 string_space:   .space 1024    # Set aside 1024 bytes for the string.
 is_palin_msg:   .asciiz "The string is a palindrome.\n"

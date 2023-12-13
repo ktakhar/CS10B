@@ -1,3 +1,9 @@
+# perfect.asm 
+
+# PSET 6 #3
+# MIPS assembly program that checks perfect numbers within a specific range and prints them
+# Calls subroutine named perfect (extra credit)
+
 .data
 perfect_msg: .asciiz "Perfect number found: "
 

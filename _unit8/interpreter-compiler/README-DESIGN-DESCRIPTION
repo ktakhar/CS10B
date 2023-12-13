@@ -1,0 +1,110 @@
+Summary of java interpreter/compiler
+
+    This is a substantial redesign of the C++ version, an OOP design using the 
+"Strategy" design pattern to allow run-time configuration of interpreter vs 
+various compilers.  The Scanner, Symbol table, and Parser are very 
+straightforward, each in their own 'static" class.  The 'strategy" is to
+providesemantic info to the Parser and Symtab via the abstract class AValue. 
+If they work strictly in terms of AValue objects,  the concrete subclass
+objects of AValue implementing each specific process can be plugged in at will
+(by main(). If a new process is added, only the part of main() that plugs in
+the subclass based on user's choice must change.  Compile the new subclass, 
+and recompile main().
+
+    In effect, the C++ pgm's single Lexeme object has been split into three 
+parts:  Lexeme   (name/lex type), 
+        SymEntry (linked list node, w/ AValue field),
+        AValue & subclasses (value & semantic knowledge)
+
+    Unlike the C++ pgm, Scanner returns traditional Lexemes, name/lexType
+pairs.  Symtab, following the C++ pgm's lead, stores name/AValue pairs;  Parser
+methods return AValue objects representing partial results, which are passed to
+other Parser and AValue methods (etc.)  Because method calls on AValue objects
+run the method of the actual object type, the right thing happens!  This is a
+variant of the "Strategy" design pattern from Gamma et al, "Design Patterns",
+Addison-Wesley, 1995, p. 315ff 
+	  
+	"Static" classes (coerced to exist just as classes; can't be instantiated):
+		InterpreterCompiler.java -- THE MAIN PROGRAM
+		Scanner.java 
+		Symtab.java (contains concrete inner class SymEntry)
+		Parser.java
+	
+	Concrete classes (or abstract)
+		Lexeme.java
+		AValue.java	    -- abstract superclass
+		IAValue.java    -- Interpreter
+		CAValue.java    -- MIPS 
+		RPNAValue.java  -- Postfix notation
+		LispAValue.java -- (setq.... ) s-exprs
+		EngAValue.java  -- English (gets clumsy very quickly!)
+		
+		LexErrorException.java, ParseErrorException.java
+	utils.SavitchIn -- used in main()
+	
+	ctest.out, itest.out -- scripted same test cases as C++ pgm
+
+Components:
+	SCANNER tokenizes, returns Lexemes w/ name, type (and val for numbers only)
+		SavitchIn not involved.[1]   Completely self-contained; no references 
+		to other classes except for its LexErrorException class.  Returns
+		Lexeme:    type
+	   		       name
+	   		       nval (for number tokens only) ...no semantic information.
+		Outside world can get or unget Lexemes (only)
+
+	SYMBOL TABLE keeps linked list of SymEntry's, (concrete inner class)
+		SymEntry:  name
+	     		   sValue  (semantic value info, as AValue-subclass object)
+	     		   next
+		Outside world can lookup, add (only)
+
+	PARSER is recursive-descent, calls semantic routines via AValue subclasses
+		it passes around.  Also keeps a distinct object of relevant AValue 
+		subclass to send semantic methods to when no other AValue available.
+
+			Outside world can parse 'program' and set semantics.
+	
+	SEMANTICS are stored as AValue subclasses, making various processing 
+	available via the common abstract "interface".  Fields are:
+		IAValue:  value  (just an int)
+	
+		CAValue:  regType 
+			      regNum
+			      static temp & permanent register allocation arrays
+	
+		LispAValue, RPNAValue, EngAValue  are very similar to each other,
+			        Each has:  pName (print name) field
+
+	DRIVER (main()) is a menu-driven loop, offering the user a choice of 
+		processing.  User's choice determines which AValue subclass main() 
+		should instantiate for the current program.  This loop catches 
+		non-fatal errors thrown from Scanner and Parser.
+
+Error Handling:    the following errors are dealt with:
+   Non-fatal errors (exceptions thrown by Parser, Scanner; caught by main()):
+	  Parse errors:
+		- undefined symbol
+		- unmatched parentheses
+		- illegal unary operator
+		- illegal factor
+		- illegal lefthand side for assgt
+		- assignment operator expected
+		- semicolon stmt delimiter expected
+	
+	  Lexical errors:
+		- illegal character
+		- Char buffer overflow (will never happen)
+		- Lexeme buffer overflow (will never happen)
+		
+		The above exceptions extend class java.lang.Exception
+		
+	  Fatal errors, both from AValue subclasses (print msg, exit(0)):
+		- divide by zero (IAValue; interpreter)
+		- ran out of temp or permanent registers (CAValue; MIPS)
+	   These could have been non-fatal, caught in main, but would've required 
+	   a bunch of throws clauses out of the AValue subclasses, cluttering it up
+----------------------------	
+[1]  Codewarrior Pro 5 (Mac) failed to run Java's PushbackReader, so 1-char
+pushback implemented by hand (~50 extra	lines).  PushbackReader is fine in
+unix.

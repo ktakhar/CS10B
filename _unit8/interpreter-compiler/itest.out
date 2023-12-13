@@ -1,0 +1,245 @@
+Script started on Wed Jan 26 15:35:58 2000
+is03:~/unit5/interpreter-compiler % login gerovichpico .broadcastoastfrm[Kpico .broadcoastast[Klogin gerovich[K[Kja va InterpreterCompiler.[K
+ASSIGNMENT STMT INTERPRETER/COMPILER
+Available semantics:
+        1 - interpreter
+        2 - MIPS compiler
+        3 - post-fix compiler
+        4 - LISP compiler
+        5 - English compiler
+        6 - quit
+        7 - ...show this list again
+
+select semantics (enter 1..5, 6 to quit, or 7 for list): 1
+                   -- INTERPRETER --
+enter program:  ';' ends lines, '.' ends pgm
+-> x = 5;
+5
+y = x + 7;
+12
+.
+select semantics (enter 1..5, 6 to quit, or 7 for list): 1
+                   -- INTERPRETER --
+enter program:  ';' ends lines, '.' ends pgm
+-> b = 1;
+1
+c = 2;
+2
+d = 4*b + 20 *  *c;
+44
+.
+select semantics (enter 1..5, 6 to quit, or 7 for list): 1
+                   -- INTERPRETER --
+enter program:  ';' ends lines, '.' ends pgm
+-> x = 4 / 3 + 5 * 7 / 4;
+9
+.
+select semantics (enter 1..5, 6 to quit, or 7 for list): 1
+                   -- INTERPRETER --
+enter program:  ';' ends lines, '.' ends pgm
+-> x = 5;
+5
+y = x + x4;
+Parse error: undefined symbol: x4
+select semantics (enter 1..5, 6 to quit, or 7 for list): 1
+                   -- INTERPRETER --
+enter program:  ';' ends lines, '.' ends pgm
+-> 32 
+Parse error: Illegal left-hand-side for assgt stmt: 3
+select semantics (enter 1..5, 6 to quit, or 7 for list): s1
+select semantics (enter 1..5, 6 to quit, or 7 for list): 1
+                   -- INTERPRETER --
+enter program:  ';' ends lines, '.' ends pgm
+-> a = * b;
+Parse error: Assignment operator expected
+select semantics (enter 1..5, 6 to quit, or 7 for list): 1
+                   -- INTERPRETER --
+enter program:  ';' ends lines, '.' ends pgm
+-> a = ??;
+Lexical error: Illegal char: ?
+select semantics (enter 1..5, 6 to quit, or 7 for list): 1
+                   -- INTERPRETER --
+enter program:  ';' ends lines, '.' ends pgm
+-> x = 3 *  ;
+Parse error: Illegal factor
+select semantics (enter 1..5, 6 to quit, or 7 for list): 1
+                   -- INTERPRETER --
+enter program:  ';' ends lines, '.' ends pgm
+-> x = 2 + 3);
+5
+Parse error: Semicolon stmt delimiter expected
+select semantics (enter 1..5, 6 to quit, or 7 for list): 1
+                   -- INTERPRETER --
+enter program:  ';' ends lines, '.' ends pgm
+-> x = (2 * 3;
+Parse error: Unmatched parentheses
+select semantics (enter 1..5, 6 to quit, or 7 for list): 6
+...y'all come back now, hear?
+is03:~/unit5/interpreter-compiler % script -a ctest.out
+Script started, file is ctest.out
+is03:~/unit5/interpreter-compiler % login gerovichpico .broadcastlogin gerovich[K[Kjava InterpreterCompiler.[K
+ASSIGNMENT STMT INTERPRETER/COMPILER
+Available semantics:
+        1 - interpreter
+        2 - MIPS compiler
+        3 - post-fix compiler
+        4 - LISP compiler
+        5 - English compiler
+        6 - quit
+        7 - ...show this list again
+
+select semantics (enter 1..5, 6 to quit, or 7 for list): 2
+                  -- MIPS COMPILER --
+enter program:  ';' ends lines, '.' ends pgm
+-> x = 5;
+        li   $t0,  5
+        move $s0, $t0
+y = x + 7;
+        li   $t0,  7
+        add  $t1, $s0, $t0
+        move $s1, $t1
+.
+select semantics (enter 1..5, 6 to quit, or 7 for list): 2
+                  -- MIPS COMPILER --
+enter program:  ';' ends lines, '.' ends pgm
+-> b = 1;
+        li   $t0,  1
+        move $s0, $t0
+c = 2;
+        li   $t0,  2
+        move $s1, $t0
+d = 4*b + 20*c;
+        li   $t0,  4
+        mul  $t1, $t0, $s0
+        li   $t0,  20
+        mul  $t2, $t0, $s1
+        add  $t0, $t1, $t2
+        move $s2, $t0
+.
+select semantics (enter 1..5, 6 to quit, or 7 for list): 2
+                  -- MIPS COMPILER --
+enter program:  ';' ends lines, '.' ends pgm
+-> x = 4 / 3 _ + 5 * 7 / 4;
+        li   $t0,  4
+        li   $t1,  3
+        div  $t2, $t0, $t1
+        li   $t0,  5
+        li   $t1,  7
+        mul  $t3, $t0, $t1
+        li   $t0,  4
+        div  $t1, $t3, $t0
+        add  $t0, $t2, $t1
+        move $s0, $t0
+.
+select semantics (enter 1..5, 6 to quit, or 7 for list): 2
+                  -- MIPS COMPILER --
+enter program:  ';' ends lines, '.' ends pgm
+-> a = b   1*2*3*4      #(  *(2*(3*(4*(5*(6*(7))))));
+        li   $t0,  1
+        li   $t1,  2
+        li   $t2,  3
+        li   $t3,  4
+        li   $t4,  5
+        li   $t5,  6
+        li   $t6,  7
+        mul  $t7, $t5, $t6
+        mul  $t5, $t4, $t7
+        mul  $t4, $t3, $t5
+        mul  $t3, $t2, $t4
+        mul  $t2, $t1, $t3
+        mul  $t1, $t0, $t2
+        move $s0, $t1
+.
+select semantics (enter 1..5, 6 to quit, or 7 for list): 2
+                  -- MIPS COMPILER --
+enter program:  ';' ends lines, '.' ends pgm
+-> a = 1*(2*(3*(4*(5*(6*(7))))));       *(8)))))));
+        li   $t0,  1
+        li   $t1,  2
+        li   $t2,  3
+        li   $t3,  4
+        li   $t4,  5
+        li   $t5,  6
+        li   $t6,  7
+        li   $t7,  8
+fatal error: ran out of temporary registersis03:~/unit5/interpreter-compiler % ^Dexit
+Script done, file is ctest.out
+is03:~/unit5/interpreter-compiler % vi CAValue.java
+[65;1H"CAValue.java" 197 lines, 6586 characters [H[2J/** CAValue.java - MIPS Compiler semantics[2;2H*  for the compiler/compiler.[B *  unit 8 lecture notes[B *[B*  A CAValue is an object holding type & number of of some register.[B *  MIPS code is generated as a side effect of the various methods,[B *  as coordinated by the Parser[B *[B*  INTERFACE:  see abstract superclass AValue.  CAValue is part of[B *  a variant of the STRATEGY pattern, to provide various interp. and[B *  compiler semantics to the Parser.[B *  (see Gamma et al, "Design Patterns", Addison-Wesley, 1995, p. 315ff)[B *[B*  Chris Morrison, Dr. Henry H. Leitner[B *  Last Modified January 2000[B */[18;1Hclass CAValue extends AValue implements Cloneable[B{[B   // MIPS registers are temporaries $t0, ... $t<MAX...>,[21;5H// permanent registers $s0, ..., $s<MAX...>,[22;5H// and zero $0,[23;5Hprivate static final int MAX_TEMPORARY_REGS = 8;[24;5Hprivate static final int MAX_PERMANENT_REGS = 8;[26;5H// REGISTER TYPES[27;5Hprivate static final int ZERO = 0;[28;5Hprivate static final int TEMPORARY = 1;[29;5Hprivate static final int PERMANENT = 2;[31;5H// Track temporary and permanent register usage:[32;5H// (array [n] == true) => $<t,s>n is in use[33;5H//[Bprivate static boolean temporaryRegUsage [][35;9H= new boolean [MAX_TEMPORARY_REGS];[36;5Hprivate static boolean permanentRegUsage [][37;9H= new boolean [MAX_PERMANENT_REGS];[39;5Hint regType;[39;25H// ZERO, TEMP., PERM.[40;5Hint regNumber;      // 0 .. <MAX...>[42;5H/** clear away remains of previous compile; make all regs available.[43;6H*/[Bvoid init()[45;5H{   temporaryRegUsage[46;13H= new boolean [MAX_TEMPORARY_REGS];[47;9HpermanentRegUsage[48;13H= new boolean [MAX_PERMANENT_REGS];[49;5H}[51;5H/** return a "zero register"[52;6H*/[BCAValue() { regType = ZERO; regNumber = 0; }[55;5H/** return a CAValue representing[56;6H*  register 'regNum' of type 'regType'[57;6H*/[Bprivate CAValue (int regType, int regNum)[59;5H{   this.regType = regType;[60;9Hthis.regNumber  = regNum;[61;5H}[63;5H// getter/setters necessary for STRATEGY pattern; client must use[64;5H// method access on AValue to correctly obtain CAValue...[H[65;1H"CAValue.java" 197 lines, 6586 characters[H[65;1H[K/fatal[H[2J    {   return genArithOpCode ("mul ", this, (CAValue)multiplier); }[3;5HAValue divideBy (AValue divisor)[4;5H{   return genArithOpCode ("div ", this, (CAValue)divisor); }[6;5HAValue negate ()[7;5H{   return genArithOpCode ("sub ", (CAValue)getZeroAValue(), this); }[9;5Hprivate CAValue genArithOpCode[10;13H(String opcode, CAValue src1, CAValue src2)[11;5H{[B   CAValue dest = getTempReg();[13;9HSystem.out.println[14;13H('\t' + opcode + " " + dest[15;14H+ ", " + src1 + ", " + src2);[16;9Hsrc1.freeRegIfTempReg();[17;9Hsrc2.freeRegIfTempReg();[18;9Hreturn dest;[19;5H}[22;5H/** allocate temporary register, return as CAValue[23;6H*/[Bprivate CAValue getTempReg()[25;5H{   for (int i=0; i < MAX_TEMPORARY_REGS; i++)[26;9H{[B   if (! temporaryRegUsage[i])[28;13H{   temporaryRegUsage[i] = true;[29;17Hreturn new CAValue (TEMPORARY, i);[30;13H}[31;9H}[BSystem.err.print ("fatal error: ran out of temporary registers");[33;9HSystem.exit (0);[34;9Hreturn null;[34;29H// keep compiler happy[35;5H}[37;5H/** free register held by receiver IFF it's a TEMPORARY register[38;6H*/[Bprivate void freeRegIfTempReg()[40;5H{   if (regType == TEMPORARY)[41;13HtemporaryRegUsage [regNumber] = false;  // mark it reusable[42;5H}[45;5H/** allocate permanent register, return as CAValue[46;6H*/[Bprivate CAValue getPermReg()[48;5H{   for (int i=0; i < MAX_PERMANENT_REGS; i++)[49;9H{[B   if (! permanentRegUsage[i])[51;13H{    permanentRegUsage[i] = true;[52;17Hreturn new CAValue (PERMANENT, i);[53;13H}[54;9H}[BSystem.err.print ("fatal error: ran out of permanent registers");[56;9HSystem.exit (0);[57;9Hreturn null;[57;29H// keep compiler happy[58;5H}[61;5H/** apply compiler semantics to the CAValue of a SYMBOL lexeme.[62;6H*  (as retrieved from the Symbol Table)[63;6H*  ...amounts to returning a copy of the CAValue receiver.[64;6H*/[32;28H[65;61HINPUT MODE[32;25Hl ("fatal error: ran out of temporary registers");[32;26Hn ("fatal error: ran out of temporary registers");[32;27H[65;61H[K[32;27H[65;1H/[32;30H[65;1H[K/[55;28Htl ("fatal error: ran out of permanent registers");[55;26Hn ("fatal error: ran out of permanent registers");[55;27H[65;1H[K:wq"CAValue.java" 197 lines, 6590 characters D                    [J[?25his03:~/unit5/interpreter-compiler % vi IAValue.java
+[65;1H"IAValue.java" 98 lines, 3666 characters [H[2J/** IAValue.java - Interpreter semantics for the interpreter/compiler.[2;2H*  Perform arithmetic operations, numerical results are returned[B *  as IAValues.[B *  unit 8 lecture notes[B *[B*  INTERFACE:  see abstract superclass AValue.  IAValue is part of[B *  a variant of the STRATEGY pattern, to provide various interp. and[B *  compiler semantics to the Parser.[B *  (see Gamma et al, "Design Patterns", Addison-Wesley, 1995, p. 315ff)[B *[B*  Chris Morrison, Dr. Henry H. Leitner[B *  Last Modified January 2000[B */[15;1Hclass IAValue extends AValue implements Cloneable[B{[B   int value;[17;41H// value of this IAValue object[19;5HIAValue()[19;31H{ value = 0; }    // make a "zero" IAValue[20;5Hprivate IAValue (int val) { value = val;}   // make IAValue w/ value 'val'[22;5H// getter necessary for STRATEGY pattern;[23;5H// version depends on receiver object type, not arg or field type[25;5HAValue getZeroAValue() { return new IAValue(); }[27;5Hprivate void setValue (IAValue val) { value = val.value;  }[29;5H/*  ARITHMETIC OPERATIONS do the math, return result as IAValue.[30;6H*/[BAValue plus (AValue addend)[32;5H{   return new IAValue (this.value + ((IAValue)addend).value); }[34;5HAValue minus (AValue subtrahend)[35;5H{   return new IAValue (this.value - ((IAValue)subtrahend).value); }[37;5HAValue times (AValue multiplier)[38;5H{   return new IAValue (this.value * ((IAValue)multiplier).value); }[40;5HAValue divideBy (AValue divisor)[41;5H{   if (((IAValue)divisor).value != 0)[42;13Hreturn new IAValue (this.value / ((IAValue)divisor).value);[43;9HSystem.err.print ("fatal error: division by zero");[44;9HSystem.exit (0);[45;9Hreturn null;[45;29H// keep compiler happy[46;5H}[48;5HAValue negate ()[49;5H{   return new IAValue (-this.value); }[52;5H/** apply interpreter semantics to the IAValue of a SYMBOL lexeme.[53;6H*  (as retrieved from the Symbol Table)[54;6H*  ...amounts to returning a copy of the IAValue receiver.[55;6H*/[BAValue evaluate ()[57;5H{   try {[Breturn (IAValue)this.clone();   // rtn copy of value[60;9H} catch (CloneNotSupportedException e) {[61;13He.printStackTrace();[62;9H}[Breturn new IAValue();[63;45H// keep compiler happy[64;5H}[H[65;1H"IAValue.java" 98 lines, 3666 characters[H[65;1H[K/[K[7mNo previous regular expression[27m[H[65;1H[K/fatal[43;28Ht[65;61HINPUT MODE[43;25Hl ("fatal error: division by zero");[43;26Hn ("fatal error: division by zero");[43;27H[65;61H[K[43;27H[65;1H[K:wq"IAValue.java" 98 lines, 3668 characters D                    [J[?25his03:~/unit5/interpreter-compiler % ls
+AValue.class               LispAValue.java
+AValue.java                ParseErrorException.class
+CAValue.class              ParseErrorException.java
+CAValue.java               Parser.class
+EngAValue.class            Parser.java
+EngAValue.java             RPNAValue.class
+IAValue.class              RPNAValue.java
+IAValue.java               Scanner.class
+InterpreterCompiler.class  Scanner.java
+InterpreterCompiler.java   Symtab$SymEntry.class
+LexErrorException.class    Symtab.class
+LexErrorException.java     Symtab.java
+Lexeme.class               ctest.out
+Lexeme.java                itest.out
+LispAValue.class
+is03:~/unit5/interpreter-compiler % ls *.hjav[K[K[K[Kjava
+AValue.java               LexErrorException.java    RPNAValue.java
+CAValue.java              Lexeme.java               Scanner.java
+EngAValue.java            LispAValue.java           Symtab.java
+IAValue.java              ParseErrorException.java
+InterpreterCompiler.java  Parser.java
+is03:~/unit5/interpreter-compiler % man ls
+Reformatting page. Please wait... completed
+[K
+LS(1)									LS(1)
+
+NAME
+  ls, dir, vdir	- list contents	of directories
+
+SYNOPSIS
+  [1mls[m [-abcdfgiklmnpqrstuxABCFGLNQRSUX1]	[-w cols] [-T cols] [-I	pattern]
+  [--all] [--escape] [--directory] [--inode] [--kilobytes] [--numeric-uid-
+  gid] [--no-group] [--hide-control-chars] [--reverse] [--size]
+  [--width=cols] [--tabsize=cols] [--almost-all] [--ignore-backups] [--clas-
+  sify]	[--file-type] [--full-time] [--ignore=pattern] [--dereference]
+  [--literal] [--quote-name] [--recursive] [--sort={none,time,size,exten-
+  sion}] [--format={long,verbose,commas,across,vertical,single-column}]
+  [--time={atime,access,use,ctime,status}] [--help] [--version]
+  [--color[={yes,no,tty}]] [--colour[={yes,no,tty}]] [name...]
+
+DESCRIPTION
+  This documentation is	no longer being	maintained and may be inaccurate or
+  incomplete.  The Texinfo documentation is now	the authoritative source.
+
+  This manual page documents the GNU version of	[1mls[m.  [1mdir[m and [1mvdir[m are ver-
+  sions	of [1mls[m with different default output formats.  These programs list
+  each given file or directory name.  Directory	contents are sorted alphabet-
+  ically.  For [1mls[m, files are by	default	listed in columns, sorted vertically,
+  if the standard output is a terminal;	otherwise they are listed one per
+  line.	 For [1mdir[m, files	are by default listed in columns, sorted vertically.
+  For [1mvdir[m, files are by default listed	in long	format.
+
+  OPTIONS
+
+  [4m-a,[24m [4m--all[24m
+       List all	files in directories, including	all files that start with
+       `.'.
+
+  [4m-b,[24m [4m--escape[24m
+       Quote nongraphic	characters in file names using alphabetic and octal
+       backslash sequences like	those used in C.
+
+  [4m-c,[24m [4m--time=ctime,[24m [4m--time=status[24m
+       Sort directory contents according to the	files' status change time
+       instead of the modification time.  If the long listing format is	being
+       used, print the status change time instead of the modification time.
+
+  [4m-d,[24m [4m--directory[24m
+       List directories	like other files, rather than listing their contents.
+
+  [4m-f[24m   Do not sort directory contents; list them in whatever order they	are
+       stored on the disk.  The	same as	enabling [4m-a[24m and	[4m-U[24m and disabling [4m-l,[24m
+       [4m-s,[24m and [4m-t.[24m
+
+  [4m--full-time[24m
+       List times in full, rather than using the standard 
