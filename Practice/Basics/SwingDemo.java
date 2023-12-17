@@ -1,0 +1,3 @@
+class SwingDemo extends JFrame {
+
+}

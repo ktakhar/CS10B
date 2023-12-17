@@ -1,2 +1,0 @@
-Task: Term Project, Priority: 3, Completed: true
-Task: PSET6, Priority: 2, Completed: true
