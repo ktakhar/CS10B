@@ -56,8 +56,9 @@ public class Prob3 {
  * Republican Prez
  * 
  * I am the President!
- * Democrat Prez
  * Republican Prez
+ * Lincoln-R
+ * Democratic Prez
  * Lincoln-R
  * 
  * FDR

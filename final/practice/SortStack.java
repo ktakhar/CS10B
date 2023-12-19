@@ -1,12 +1,9 @@
 import java.util.Stack;
 
 public class SortStack {
-    // This method takes an input stack of integers and sorts it in non-decreasing order
     public static Stack<Integer> sortStack(Stack<Integer> stack) {
-        // Create an empty stack to hold the sorted elements
         Stack<Integer> sortedStack = new Stack<>();
 
-        // Start processing elements from the original stack
         while (!stack.isEmpty()) {
             // Pop the top element from the original stack
             int current = stack.pop();
