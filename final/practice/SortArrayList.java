@@ -1,6 +1,6 @@
 import java.util.*;
 
-class SortArrayEx {
+class SortArrayList {
     public static void main(String [] args) {
         int [] numbers = {50, 15, 30, 20, 10};
         ArrayList<Integer> numList = new ArrayList<>();

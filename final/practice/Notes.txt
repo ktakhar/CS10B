@@ -1,0 +1,55 @@
+To find the byte in which element n is represented, 
+the address we need is byteArray[???] 
+and the bit number at that address is ???.
+
+byteArray[n / 8] equals the byte in which element n is represented 
+(n % 8) = bit number of address 
+
+void setBit(int n) {
+    int whichByte = n / 8;
+    int whichBit = n % 8;
+    byteArray[whichByte] |= (1 << whichBit); // 00000001 = 1; move the 1 left which bit spaces. 
+}
+
+if (setA.byteArray[0] == 17) {
+    setA.byteArray[0] ^= 17; // Bitwise XOR to flip the bit
+} else {
+    setA.byteArray[0] = 17; // Set it to 17
+}
+
+
+OR
+
+A   |   B   |   A OR B
+-----------------------
+0   |   0   |     0
+0   |   1   |     1
+1   |   0   |     1
+1   |   1   |     1
+
+XOR 
+A   |   B   |   A XOR B
+-----------------------
+0   |   0   |     0
+0   |   1   |     1
+1   |   0   |     1
+1   |   1   |     0
+
+AND 
+A   |   B   |   A AND B
+-----------------------
+0   |   0   |     0
+0   |   1   |     0
+1   |   0   |     0
+1   |   1   |     1
+
+
+ int x = 17;
+      int y = -4;
+
+      x = x ^ y; (swaps x and y)
+      y = x ^ y; (swaps x and y)
+      x = x ^ y; (swaps x and y)
+ 
+      System.out.println ("x = " + x);
+      System.out.println ("y = " + y);

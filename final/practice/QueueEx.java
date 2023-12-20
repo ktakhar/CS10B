@@ -3,19 +3,19 @@ import java.util.*;
 class QueueEx {
     public static void main(String[] args) {
         String[] data = {"to", "be", "or", "not", "to", "be"};
-        Queue<String> q = new LinkedList<>();
+        Queue<String> dataList = new LinkedList<>();
 
         for (String str : data) {
-            q.add(str);
+            dataList.add(str);
         }
 
-        System.out.println("Queue: " + q);           // Queue: [to, be, or, not, to, be]
-        System.out.println("Size: " + q.size());     // Size: 6
-        System.out.println("Peek: " + q.peek());     // Peek: to
-        System.out.println("Remove: " + q.remove()); // Remove: to         
+        System.out.println("Queue: " + dataList);           // Queue: [to, be, or, not, to, be]
+        System.out.println("Size: " + dataList.size());     // Size: 6
+        System.out.println("Peek: " + dataList.peek());     // Peek: to
+        System.out.println("Remove: " + dataList.remove()); // Remove: to         
 
-        while (!q.isEmpty()) {
-            System.out.print(q.remove() + " "); // be or not to be (removes all items and adds them back with a space)
+        while (!dataList.isEmpty()) {
+            System.out.print(dataList.remove() + " "); // be or not to be (removes all items and adds them back with a space)
         }
         
         System.out.println();

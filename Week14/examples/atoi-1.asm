@@ -9,10 +9,10 @@
 	.text
 main:
 	la     $a0, prompt	    		# prompt user for an integer
-	li     $v0, 4
+	li     $v0, 4					# load print_string into $v0
 	syscall
 	la		$a0, string_space		# read the string S:
-	li		$a1, 1024
+	li		$a1, 1024               # 1024 spaces of memory into $a1
 	li		$v0, 8		    		# load "read_string" code into $v0.
 	syscall	
 
